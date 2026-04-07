@@ -7,7 +7,7 @@ export interface PressArticle {
 }
 
 export const press: Record<string, PressArticle[]> = {
-  happening: [],
+  super: [],
 
   chiliz: [
     {

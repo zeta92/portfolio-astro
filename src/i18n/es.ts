@@ -20,8 +20,8 @@ export const es: Translations = {
     headline1: 'Creando los',
     headline2: 'sistemas',
     headline3: 'que mueven la web.',
-    body: '12 años creando productos de alto rendimiento — desde plataformas Web3 y wallets crypto hasta dispositivos AR/VR y Ad-Tech. Ahora mismo, dando forma al futuro de los Design Systems en Happening.',
-    meta1: 'Happening · Remoto',
+    body: '12 años creando productos de alto rendimiento — desde plataformas Web3 y wallets crypto hasta dispositivos AR/VR y Ad-Tech. Ahora mismo, dando forma al futuro de los Design Systems en Super (Superbet).',
+    meta1: 'Super · Remoto',
     meta2: 'Almería, España',
     meta3: 'Abierto a nuevos retos',
     scroll: 'Scroll',
@@ -32,7 +32,7 @@ export const es: Translations = {
     heading1: '12+ años',
     heading2: 'en producción.',
     body1:
-      'Soy <strong>Luis Tiburcio</strong>, desarrollador fullstack con alma frontend. He pasado de cofundar startups a ser CTO, y hoy doy forma al Design System del futuro en <strong>Happening</strong>.',
+      'Soy <strong>Luis Tiburcio</strong>, desarrollador fullstack con alma frontend. He pasado de cofundar startups a ser CTO, y hoy doy forma al Design System del futuro en <strong>Super</strong>, la empresa tecnológica detrás de Superbet.',
     body2:
       'Mi stack vive donde <strong>React, Next.js, Vue.js y Web3</strong> se encuentran con infraestructura cloud escalable. Me obsesiona la arquitectura, la DX y hacer cosas que funcionen de verdad a escala.',
     stats: {
@@ -59,10 +59,10 @@ export const es: Translations = {
     jobs: [
       {
         period: '2025 — Hoy',
-        company: 'Happening',
+        company: 'Super · Superbet',
         role: 'Ingeniero Fullstack Senior',
-        subtitle: 'Happening — Design Systems · IA y Automatización',
-        desc: 'Formo parte del equipo de Design System, donde construimos una librería de componentes de nueva generación con pipelines Figma-to-code automatizados usando Figma Code Connect. Integro herramientas de IA en todo el flujo de diseño a desarrollo para acelerar tiempos de entrega y garantizar consistencia a escala.',
+        subtitle: 'Super (Superbet) — Design Systems · IA y Automatización',
+        desc: 'Formo parte del equipo de Design System en Super, la empresa tecnológica matriz de Superbet, donde construimos una librería de componentes de nueva generación con pipelines Figma-to-code automatizados usando Figma Code Connect. Integro herramientas de IA en todo el flujo de diseño a desarrollo para acelerar tiempos de entrega y garantizar consistencia a escala.',
         tags: ['Vue.js', 'React.js', 'Figma Code Connect', 'Design Systems', 'Figma', 'Herramientas IA', 'Librerías de Componentes'],
         accent: [0, 1, 2, 3],
       },
