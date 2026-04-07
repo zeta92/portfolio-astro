@@ -3,6 +3,7 @@ import type { Translations } from '../i18n/en';
 import type { Lang } from '../i18n/utils';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import Analytics from '@vercel/analytics/astro';
 
 interface Props {
   t: Translations;
@@ -23,6 +24,7 @@ const { t, lang } = Astro.props;
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="alternate" hreflang="en" href="/" />
   <link rel="alternate" hreflang="es" href="/es/" />
+  <Analytics />
   <style is:global>
     /* ─────────────────────────────────────────────
        DESIGN TOKENS  (Claude × Cursor × Vercel)
