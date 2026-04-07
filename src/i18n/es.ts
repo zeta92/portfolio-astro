@@ -2,9 +2,9 @@ import type { Translations } from './en';
 
 export const es: Translations = {
   meta: {
-    title: 'Luis Tiburcio — Ingeniero Senior de Software Fullstack',
+    title: 'Luis Tiburcio — Ingeniero Fullstack Senior',
     description:
-      'Portfolio de Luis Tiburcio De la Cruz Fernandez, Ingeniero Senior de Software Fullstack con 12+ años construyendo productos web de alto rendimiento.',
+      'Portfolio de Luis Tiburcio De la Cruz Fernandez, Ingeniero Fullstack Senior con más de 12 años construyendo productos web de alto rendimiento.',
   },
 
   nav: {
@@ -16,11 +16,11 @@ export const es: Translations = {
   },
 
   hero: {
-    tag: 'Ingeniero Senior de Software Fullstack',
+    tag: 'Ingeniero Fullstack Senior',
     headline1: 'Construyendo los',
     headline2: 'sistemas',
     headline3: 'que mueven la web.',
-    body: '12 años entregando productos de alto rendimiento — desde plataformas Web3 y wallets crypto hasta dispositivos AR/VR y Ad-Tech. Actualmente construyendo el futuro de los Design Systems en Happening.',
+    body: '12 años creando productos de alto rendimiento — desde plataformas Web3 y wallets crypto hasta dispositivos AR/VR y Ad-Tech. Ahora mismo, dando forma al futuro de los Design Systems en Happening.',
     meta1: 'Happening · Remoto',
     meta2: 'Almería, España',
     meta3: 'Abierto a nuevos retos',
@@ -30,14 +30,14 @@ export const es: Translations = {
   about: {
     label: 'Sobre mí',
     heading1: '12+ años',
-    heading2: 'entregando.',
+    heading2: 'en producción.',
     body1:
-      'Soy <strong>Luis Tiburcio</strong>, desarrollador fullstack con alma frontend. He pasado de cofundar startups a ocupar el puesto de CTO, y hoy construyo el Design System del futuro en <strong>Happening</strong>.',
+      'Soy <strong>Luis Tiburcio</strong>, desarrollador fullstack con alma frontend. He pasado de cofundar startups a ser CTO, y hoy doy forma al Design System del futuro en <strong>Happening</strong>.',
     body2:
-      'Mi stack vive donde <strong>React, Next.js, Vue.js y Web3</strong> se encuentran con la infraestructura cloud escalable. Me importa profundamente la arquitectura, la DX y entregar cosas que realmente funcionen a escala.',
+      'Mi stack vive donde <strong>React, Next.js, Vue.js y Web3</strong> se encuentran con infraestructura cloud escalable. Me obsesiona la arquitectura, la DX y hacer cosas que funcionen de verdad a escala.',
     stats: {
       years: 'Años de experiencia',
-      companies: 'Empresas entregadas',
+      companies: 'Empresas con impacto',
       leadership: 'Roles de liderazgo',
       users: 'Usuarios en plataforma',
     },
@@ -53,16 +53,16 @@ export const es: Translations = {
 
   experience: {
     label: 'Experiencia',
-    heading: 'Historial Laboral',
-    count: '09 posiciones · 2013 → presente',
+    heading: 'Trayectoria',
+    count: '09 posiciones · 2013 → hoy',
     pressLabel: 'En prensa',
     jobs: [
       {
         period: '2025 — Hoy',
         company: 'Happening',
-        role: 'Ingeniero Senior de Software Fullstack',
+        role: 'Ingeniero Fullstack Senior',
         subtitle: 'Happening — Design Systems · IA y Automatización',
-        desc: 'Trabajo en el equipo de Design System construyendo una librería de componentes de nueva generación con pipelines automatizados de Figma a código usando Figma Code Connect. Integración de herramientas de IA en todo el flujo de diseño a desarrollo para acelerar la entrega y garantizar consistencia a escala.',
+        desc: 'Formo parte del equipo de Design System, donde construimos una librería de componentes de nueva generación con pipelines Figma-to-code automatizados usando Figma Code Connect. Integro herramientas de IA en todo el flujo de diseño a desarrollo para acelerar tiempos de entrega y garantizar consistencia a escala.',
         tags: ['Vue.js', 'React.js', 'Figma Code Connect', 'Design Systems', 'Figma', 'Herramientas IA', 'Librerías de Componentes'],
         accent: [0, 1, 2, 3],
       },
@@ -71,16 +71,16 @@ export const es: Translations = {
         company: 'Chiliz · Socios.com',
         role: 'Frontend Tech Lead',
         subtitle: 'Chiliz / Socios.com — Crypto · Deporte · Web3',
-        desc: 'Lideré el equipo Frontend en Socios.com — la plataforma de fan engagement líder mundial con más de 2,3M de usuarios. Diseñé y entregué la nueva app móvil y web, impulsé la integración del wallet Web3 y garanticé una arquitectura escalable. Durante este período, Socios se convirtió en la primera plataforma deportiva certificada bajo el marco MiCA de la UE.',
+        desc: 'Lideré el equipo Frontend de Socios.com — la plataforma de fan engagement líder mundial con más de 2,3M de usuarios. Diseñé y lancé la nueva app móvil y web, impulsé la integración del wallet Web3 y aseguré una arquitectura escalable. Bajo mi etapa, Socios se convirtió en la primera plataforma deportiva certificada bajo el marco MiCA de la UE.',
         tags: ['Next.js', 'React Native', 'Web3', 'DFNS', 'Styled Components', 'CircleCI', 'CodePush'],
         accent: [0, 1, 2],
       },
       {
         period: '2021 — 2023',
         company: 'Bridder',
-        role: 'Director de Tecnología (CTO)',
+        role: 'CTO',
         subtitle: 'Bridder — Ad-Tech',
-        desc: 'Dirigí el desarrollo de una plataforma Ad-Tech que permite a marcas y streamers gestionar campañas publicitarias en Twitch. Lideré la creación de extensiones personalizadas de Twitch y gestioné la infraestructura cloud en AWS.',
+        desc: 'Dirigí el desarrollo de una plataforma Ad-Tech para gestionar campañas publicitarias de marcas y streamers en Twitch. Creamos extensiones personalizadas de Twitch y monté toda la infraestructura cloud en AWS.',
         tags: ['React.js', 'Node.js', 'GraphQL', 'MongoDB', 'Strapi', 'AWS'],
         accent: [0, 1, 2],
       },
@@ -89,7 +89,7 @@ export const es: Translations = {
         company: 'Wave Application',
         role: 'Desarrollador Fullstack Senior',
         subtitle: 'Wave Location Technologies — Geolocalización · Safety Tech',
-        desc: 'Desarrollé <em>Sister</em> — una app de seguridad para mujeres con localización en tiempo real, botón de pánico e integración policial, con precisión de 2 metros via infraestructura AWS. Nació de datos que muestran que el 83% de las españolas se sienten inseguras caminando solas de noche. Destacada por Amazon Web Services.',
+        desc: 'Desarrollé <em>Sister</em> — una app de seguridad para mujeres con localización en tiempo real, botón de pánico e integración policial, con precisión de 2 metros sobre infraestructura AWS. La idea surgió tras una encuesta a 35.000 mujeres: el 83% se siente insegura al volver sola a casa por la noche. Amazon Web Services la destacó como caso de éxito.',
         tags: ['React', 'Redux', 'Node.js', 'Firebase', 'AWS S3', 'CloudFront'],
         accent: [0],
       },
@@ -98,16 +98,16 @@ export const es: Translations = {
         company: 'Solera',
         role: 'Desarrollador Fullstack Senior',
         subtitle: 'Solera Global Data & Content — Datos',
-        desc: 'Lideré la migración de una plataforma legacy basada en Backbone a React, mejorando la mantenibilidad y modernizando la experiencia frontend. Refactoricé código heredado en componentes reutilizables.',
+        desc: 'Lideré la migración de una plataforma legacy de Backbone a React, mejorando la mantenibilidad y actualizando toda la capa frontend. Convertí código heredado en componentes reutilizables y bien estructurados.',
         tags: ['React', 'Backbone', 'Webpack', 'Node.js', 'ES6'],
         accent: [0],
       },
       {
         period: '2016 — 2018',
         company: 'Streye / Droiders',
-        role: 'Desarrollador y Líder de Equipo',
+        role: 'Desarrollador y Tech Lead',
         subtitle: 'Streye / Droiders — AR/VR/XR · Google Glass',
-        desc: 'Desarrollé soluciones AR/VR/XR como distribuidor online exclusivo mundial de Google Glass Enterprise — las mayores ventas globales desde su lanzamiento en 2017. Diseñé un portal cloud para gestión remota de headsets en entornos industriales y médicos. España realizó su primera operación quirúrgica con Google Glass usando la plataforma de Droiders. Captación de €1,5M de inversores de Hong Kong.',
+        desc: 'Construí soluciones AR/VR/XR siendo el distribuidor online exclusivo mundial de Google Glass Enterprise — las mayores ventas globales desde su lanzamiento en 2017. Diseñé un portal cloud para gestionar headsets en remoto en entornos industriales y médicos. Nuestra plataforma permitió la primera operación quirúrgica con Google Glass en España. Captación de €1,5M de inversores en Hong Kong.',
         tags: ['WebRTC', 'Three.js', 'Angular', 'Socket.IO', 'Node.js', 'MongoDB'],
         accent: [0, 1],
       },
@@ -116,7 +116,7 @@ export const es: Translations = {
         company: 'Everis',
         role: 'Desarrollador Fullstack Senior',
         subtitle: 'Everis Center — Consultoría',
-        desc: 'Desarrollé una aplicación de ticketing para Vodafone usando Java y Amdocs. Impartí formaciones sobre el framework Amdocs para desarrolladores junior.',
+        desc: 'Desarrollé una aplicación de ticketing para Vodafone con Java y Amdocs. También impartí formación sobre el framework Amdocs a desarrolladores junior del equipo.',
         tags: ['Java', 'Amdocs', 'Oracle', 'PLSQL'],
         accent: [],
       },
@@ -125,16 +125,16 @@ export const es: Translations = {
         company: 'NavionTruck',
         role: 'Project Manager',
         subtitle: 'NavionTruck España — Electrónica',
-        desc: 'Gestioné el desarrollo de 11 tiendas e-commerce y diseñé un panel admin centralizado con PrestaShop. Lideré un equipo implementando integraciones multiplataforma y actualizaciones de inventario automatizadas.',
+        desc: 'Gestioné el desarrollo de 11 tiendas e-commerce y diseñé un panel de administración centralizado con PrestaShop. Coordiné un equipo que implementó integraciones multiplataforma y automatizó las actualizaciones de inventario.',
         tags: ['Java', 'PHP', 'PrestaShop', 'JavaScript', 'Android'],
         accent: [],
       },
       {
         period: '2013 — 2014',
         company: 'Coorda Networks',
-        role: 'CO-Fundador y Desarrollador',
+        role: 'Cofundador y Desarrollador',
         subtitle: 'Coorda Networks — Software Factory',
-        desc: 'Cofundé y desarrollé <em>Coobox</em>, un motor de e-commerce para gestión de tiendas online. Lideré la migración de PHP 4.0 a un stack moderno.',
+        desc: 'Cofundé la empresa y desarrollé <em>Coobox</em>, un motor de e-commerce para gestionar tiendas online. Lideré la migración del stack de PHP 4.0 a tecnologías modernas.',
         tags: ['PHP 5.4', 'HTML', 'CSS', 'JavaScript'],
         accent: [],
       },
@@ -145,7 +145,7 @@ export const es: Translations = {
     label: 'Trabajemos juntos',
     heading1: 'Hablemos',
     heading2: 'ya.',
-    body: 'Abierto a conversaciones de Senior Frontend, Tech Lead y CTO. 100% remoto desde España.',
+    body: 'Disponible para roles de Senior Frontend, Tech Lead y CTO. Trabajo en remoto desde España.',
     links: {
       email: 'Email',
       phone: 'Teléfono',
