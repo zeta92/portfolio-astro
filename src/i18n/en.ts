@@ -58,6 +58,7 @@ export const en = {
     label: 'Experience',
     heading: 'Work History',
     count: '09 positions · 2013 → present',
+    pressLabel: 'In the press',
     jobs: [
       {
         period: '2025 — Now',

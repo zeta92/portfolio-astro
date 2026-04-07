@@ -55,6 +55,7 @@ export const es: Translations = {
     label: 'Experiencia',
     heading: 'Historial Laboral',
     count: '09 posiciones · 2013 → presente',
+    pressLabel: 'En prensa',
     jobs: [
       {
         period: '2025 — Hoy',
