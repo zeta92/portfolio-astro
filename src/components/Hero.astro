@@ -89,4 +89,7 @@ const h = t.hero;
   @media (max-width: 900px) {
     .hero { padding: calc(56px + var(--space-8)) var(--space-5) var(--space-8); }
   }
+  @media (max-width: 480px) {
+    .hero__headline { font-size: clamp(38px, 11vw, 52px); }
+  }
 </style>
