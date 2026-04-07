@@ -1,0 +1,564 @@
+# Loading Screen Animation Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Add a full-screen 2.5s intro animation to the portfolio that displays 27 tech icons converging into a black-hole effect, then explodes outward and exits with a glitch dissolve.
+
+**Architecture:** A self-contained `Loader.astro` component holds all markup, styles, and animation logic as an inline `<script>`. It is mounted as the first child of `<body>` in `Layout.astro`. When the animation completes it removes itself from the DOM and dispatches a `loaderDone` event so the hero reveal animations in `Layout.astro` fire only after the loader exits.
+
+**Tech Stack:** Astro 5, vanilla JS `requestAnimationFrame`, no external libraries.
+
+---
+
+## File Map
+
+| File | Action | What changes |
+|---|---|---|
+| `src/components/Loader.astro` | **Create** | New component — full overlay, 27 elements, complete animation script |
+| `src/layouts/Layout.astro` | **Modify** | Import + mount `<Loader />`, change hero reveal trigger from `window load` to `loaderDone` event |
+
+---
+
+## Task 1: Create `Loader.astro` with markup and styles
+
+**Files:**
+- Create: `src/components/Loader.astro`
+
+- [ ] **Step 1: Create the file with markup and CSS only (no JS yet)**
+
+```astro
+---
+// src/components/Loader.astro
+// No props — self-contained
+---
+<div id="loader" aria-hidden="true">
+  <div id="loader-stage">
+    <div class="loader-scan"></div>
+    <div id="loader-center">
+      <div class="loader-core" id="loader-core"></div>
+      <div class="loader-halo" id="loader-h1" style="width:60px;height:60px;margin:-30px 0 0 -30px"></div>
+      <div class="loader-halo" id="loader-h2" style="width:140px;height:140px;margin:-70px 0 0 -70px"></div>
+      <div class="loader-halo" id="loader-h3" style="width:260px;height:260px;margin:-130px 0 0 -130px"></div>
+    </div>
+    <div id="loader-glitch"></div>
+    <div id="loader-bar"></div>
+  </div>
+</div>
+
+<style>
+  #loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #141413;
+    transition: opacity 0.3s ease;
+  }
+  #loader-stage {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  #loader-stage::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(201,100,66,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,100,66,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 0;
+  }
+  .loader-scan {
+    position: absolute;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,100,66,0.3), transparent);
+    z-index: 1;
+    animation: loader-scan 3.5s linear infinite;
+  }
+  @keyframes loader-scan { 0% { top: 0% } 100% { top: 100% } }
+  #loader-bar {
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px;
+    width: 0%;
+    z-index: 10;
+    background: linear-gradient(90deg, #c96442, #d97757);
+    box-shadow: 0 0 10px rgba(201,100,66,0.9);
+  }
+  #loader-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    pointer-events: none;
+  }
+  .loader-core {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #c96442;
+    box-shadow: 0 0 14px 3px rgba(201,100,66,0.6);
+  }
+  .loader-halo {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(201,100,66,0.22);
+    top: 50%; left: 50%;
+    opacity: 0;
+  }
+  #loader-h3 { border-color: rgba(201,100,66,0.07); }
+  .loader-el {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+    transform-origin: center;
+  }
+  .loader-el svg { display: block; }
+  .loader-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+  #loader-glitch {
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #loader { display: none; }
+  }
+</style>
+```
+
+- [ ] **Step 2: Verify the file exists and has no syntax errors**
+
+```bash
+cd /home/zeta/portfolio-astro
+npx astro check 2>&1 | head -30
+```
+
+Expected: no errors from `Loader.astro`. (Other pre-existing errors are OK.)
+
+---
+
+## Task 2: Add the animation script to `Loader.astro`
+
+**Files:**
+- Modify: `src/components/Loader.astro`
+
+This task adds the full `<script>` block after the `<style>` block. The script:
+1. Defines the 27 ELEMENTS array
+2. Creates element DOM nodes dynamically
+3. Computes collision-free spread positions and explosion positions
+4. Runs a one-shot `requestAnimationFrame` loop (`p` goes 0→1 over 2500ms)
+5. When `p >= 1`: fades out `#loader`, removes it from DOM, dispatches `loaderDone`
+
+- [ ] **Step 1: Append the `<script>` block to `src/components/Loader.astro`**
+
+Add this entire block after the closing `</style>` tag:
+
+```astro
+<script>
+(function () {
+  // ── Skip if reduced motion (CSS already hides #loader, but skip JS too) ──
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.getElementById('loader')?.remove();
+    document.body.style.overflow = '';
+    document.dispatchEvent(new CustomEvent('loaderDone'));
+    return;
+  }
+
+  // ── Element definitions ────────────────────────────────────────────────────
+  const ELEMENTS = [
+    { id:'vr',      size:44, svg:`<svg viewBox="0 0 64 40" fill="none"><rect x="2" y="2" width="60" height="36" rx="10" stroke="rgba(250,249,245,0.55)" stroke-width="2"/><circle cx="20" cy="20" r="9" stroke="rgba(250,249,245,0.45)" stroke-width="1.8" fill="rgba(201,100,66,0.12)"/><circle cx="44" cy="20" r="9" stroke="rgba(250,249,245,0.45)" stroke-width="1.8" fill="rgba(201,100,66,0.12)"/><line x1="29" y1="20" x2="35" y2="20" stroke="rgba(250,249,245,0.28)" stroke-width="1.5"/></svg>` },
+    { id:'eth',     size:38, svg:`<svg viewBox="0 0 44 56" fill="none"><polygon points="22,2 42,22 22,32 2,22" stroke="rgba(201,100,66,0.9)" stroke-width="2" fill="rgba(201,100,66,0.1)"/><polygon points="22,32 42,22 22,54" stroke="rgba(201,100,66,0.6)" stroke-width="1.5" fill="rgba(201,100,66,0.06)"/><polygon points="22,32 2,22 22,54" stroke="rgba(201,100,66,0.4)" stroke-width="1.5" fill="rgba(201,100,66,0.04)"/></svg>` },
+    { id:'chz',     size:40, svg:`<svg viewBox="0 0 56 56" fill="none"><polygon points="28,3 51,16 51,40 28,53 5,40 5,16" stroke="rgba(201,100,66,0.8)" stroke-width="2" fill="rgba(201,100,66,0.07)"/><text x="28" y="34" text-anchor="middle" font-family="monospace" font-size="14" font-weight="700" fill="rgba(201,100,66,0.95)" letter-spacing="0.05em">CHZ</text></svg>` },
+    { id:'web3',    size:32, html:`<div class="loader-badge" style="font-size:11px;color:rgba(201,100,66,0.85);border-color:rgba(201,100,66,0.3);background:rgba(201,100,66,0.07)">Web3</div>` },
+    { id:'solidity',size:32, html:`<div class="loader-badge" style="font-size:10px;color:rgba(201,100,66,0.7);border-color:rgba(201,100,66,0.2);background:rgba(201,100,66,0.05)">Solidity</div>` },
+    { id:'react',   size:44, svg:`<svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="32" rx="26" ry="10" stroke="rgba(97,218,251,0.7)" stroke-width="1.8"/><ellipse cx="32" cy="32" rx="26" ry="10" stroke="rgba(97,218,251,0.5)" stroke-width="1.8" transform="rotate(60 32 32)"/><ellipse cx="32" cy="32" rx="26" ry="10" stroke="rgba(97,218,251,0.5)" stroke-width="1.8" transform="rotate(-60 32 32)"/><circle cx="32" cy="32" r="4.5" fill="rgba(97,218,251,0.9)"/></svg>` },
+    { id:'vue',     size:38, svg:`<svg viewBox="0 0 52 52" fill="none"><polygon points="26,4 48,44 4,44" stroke="rgba(65,184,131,0.85)" stroke-width="2" fill="rgba(65,184,131,0.08)"/><polygon points="26,14 38,36 14,36" stroke="rgba(65,184,131,0.4)" stroke-width="1.5" fill="none"/></svg>` },
+    { id:'next',    size:34, html:`<div class="loader-badge" style="font-size:11px;color:rgba(250,249,245,0.7);border-color:rgba(250,249,245,0.18);background:rgba(250,249,245,0.04)">NEXT.JS</div>` },
+    { id:'angular', size:40, svg:`<svg viewBox="0 0 56 56" fill="none"><polygon points="28,4 52,14 48,44 28,52 8,44 4,14" stroke="rgba(221,0,49,0.7)" stroke-width="2" fill="rgba(221,0,49,0.08)"/><polygon points="28,12 40,40 16,40" stroke="rgba(221,0,49,0.4)" stroke-width="1.5" fill="none"/></svg>` },
+    { id:'node',    size:40, svg:`<svg viewBox="0 0 56 56" fill="none"><polygon points="28,3 52,16 52,40 28,53 4,40 4,16" stroke="rgba(104,160,99,0.8)" stroke-width="2" fill="rgba(104,160,99,0.08)"/><text x="28" y="34" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="rgba(104,160,99,0.9)">NODE</text></svg>` },
+    { id:'ts',      size:36, svg:`<svg viewBox="0 0 48 48" fill="none"><rect x="2" y="2" width="44" height="44" rx="6" stroke="rgba(49,120,198,0.8)" stroke-width="2" fill="rgba(49,120,198,0.08)"/><text x="24" y="33" text-anchor="middle" font-family="monospace" font-size="18" font-weight="700" fill="rgba(49,120,198,0.95)">TS</text></svg>` },
+    { id:'redux',   size:30, html:`<div class="loader-badge" style="font-size:10px;color:rgba(118,74,188,0.85);border-color:rgba(118,74,188,0.28);background:rgba(118,74,188,0.07)">Redux</div>` },
+    { id:'php',     size:30, html:`<div class="loader-badge" style="font-size:10px;color:rgba(119,123,179,0.9);border-color:rgba(119,123,179,0.3);background:rgba(119,123,179,0.07)">PHP</div>` },
+    { id:'aws',     size:38, html:`<div class="loader-badge" style="font-size:12px;color:rgba(255,153,0,0.95);border-color:rgba(255,153,0,0.32);background:rgba(255,153,0,0.07)">AWS</div>` },
+    { id:'docker',  size:34, html:`<div class="loader-badge" style="font-size:11px;color:rgba(13,183,237,0.85);border-color:rgba(13,183,237,0.28);background:rgba(13,183,237,0.07)">Docker</div>` },
+    { id:'firebase',size:34, html:`<div class="loader-badge" style="font-size:11px;color:rgba(255,196,0,0.85);border-color:rgba(255,196,0,0.28);background:rgba(255,196,0,0.06)">Firebase</div>` },
+    { id:'mongo',   size:38, svg:`<svg viewBox="0 0 36 56" fill="none"><path d="M18 3C18 3 4 18 4 32C4 42 9.5 50 18 54C26.5 50 32 42 32 32C32 18 18 3 18 3Z" stroke="rgba(77,179,61,0.75)" stroke-width="2" fill="rgba(77,179,61,0.08)"/><line x1="18" y1="46" x2="18" y2="54" stroke="rgba(77,179,61,0.7)" stroke-width="3" stroke-linecap="round"/></svg>` },
+    { id:'gql',     size:40, svg:`<svg viewBox="0 0 52 52" fill="none"><polygon points="26,3 48,15 48,37 26,49 4,37 4,15" stroke="rgba(229,53,171,0.75)" stroke-width="2" fill="rgba(229,53,171,0.07)"/><text x="26" y="33" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="rgba(229,53,171,0.9)">GQL</text></svg>` },
+    { id:'twitch',  size:42, svg:`<svg viewBox="0 0 40 44" fill="none"><path d="M4 4L4 32L13 32L13 40L21 32L29 32L36 25L36 4Z" stroke="rgba(145,70,255,0.85)" stroke-width="2" fill="rgba(145,70,255,0.08)"/><line x1="16" y1="13" x2="16" y2="24" stroke="rgba(145,70,255,0.8)" stroke-width="2.8" stroke-linecap="round"/><line x1="24" y1="13" x2="24" y2="24" stroke="rgba(145,70,255,0.8)" stroke-width="2.8" stroke-linecap="round"/></svg>` },
+    { id:'webrtc',  size:36, html:`<div class="loader-badge" style="font-size:10px;color:rgba(97,218,251,0.8);border-color:rgba(97,218,251,0.25);background:rgba(97,218,251,0.06)">WebRTC</div>` },
+    { id:'socket',  size:34, html:`<div class="loader-badge" style="font-size:10px;color:rgba(250,249,245,0.55);border-color:rgba(250,249,245,0.16);background:rgba(250,249,245,0.04)">Socket.IO</div>` },
+    { id:'threejs', size:34, html:`<div class="loader-badge" style="font-size:10px;color:rgba(250,249,245,0.6);border-color:rgba(250,249,245,0.16);background:rgba(250,249,245,0.04)">Three.js</div>` },
+    { id:'figma',   size:38, svg:`<svg viewBox="0 0 36 56" fill="none"><rect x="2" y="2" width="16" height="18" rx="8" stroke="rgba(242,78,30,0.8)" stroke-width="1.8" fill="rgba(242,78,30,0.07)"/><rect x="2" y="20" width="16" height="16" stroke="rgba(162,89,255,0.8)" stroke-width="1.8" fill="rgba(162,89,255,0.07)"/><rect x="2" y="36" width="16" height="18" stroke="rgba(0,212,150,0.8)" stroke-width="1.8" fill="rgba(0,212,150,0.07)"/><rect x="18" y="2" width="16" height="18" rx="8" stroke="rgba(255,114,98,0.8)" stroke-width="1.8" fill="rgba(255,114,98,0.07)"/><circle cx="26" cy="28" r="8" stroke="rgba(24,160,251,0.8)" stroke-width="1.8" fill="rgba(24,160,251,0.07)"/></svg>` },
+    { id:'git',     size:28, html:`<div class="loader-badge" style="font-size:10px;color:rgba(240,80,50,0.85);border-color:rgba(240,80,50,0.28);background:rgba(240,80,50,0.06)">Git</div>` },
+    { id:'pin',     size:38, svg:`<svg viewBox="0 0 44 52" fill="none"><path d="M22 4C13.2 4 6 11.2 6 20C6 31 22 48 22 48C22 48 38 31 38 20C38 11.2 30.8 4 22 4Z" stroke="rgba(250,249,245,0.5)" stroke-width="2" fill="rgba(201,100,66,0.1)"/><circle cx="22" cy="20" r="5.5" stroke="rgba(201,100,66,0.9)" stroke-width="2" fill="rgba(201,100,66,0.18)"/></svg>` },
+    { id:'shield',  size:38, svg:`<svg viewBox="0 0 44 52" fill="none"><path d="M22 3L4 11V24C4 35 11 45 22 49C33 45 40 35 40 24V11L22 3Z" stroke="rgba(250,249,245,0.4)" stroke-width="2" fill="rgba(250,249,245,0.04)"/><path d="M14 24L20 30L32 18" stroke="rgba(65,184,131,0.9)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` },
+    { id:'super',   size:40, svg:`<svg viewBox="0 0 52 52" fill="none"><rect x="4" y="4" width="44" height="44" rx="9" stroke="rgba(201,100,66,0.75)" stroke-width="2" fill="rgba(201,100,66,0.07)"/><circle cx="17" cy="17" r="3.5" fill="rgba(201,100,66,0.9)"/><circle cx="35" cy="17" r="3.5" fill="rgba(201,100,66,0.9)"/><circle cx="26" cy="26" r="3.5" fill="rgba(201,100,66,0.9)"/><circle cx="17" cy="35" r="3.5" fill="rgba(201,100,66,0.9)"/><circle cx="35" cy="35" r="3.5" fill="rgba(201,100,66,0.9)"/></svg>` },
+  ];
+
+  // ── Build DOM ──────────────────────────────────────────────────────────────
+  const stage = document.getElementById('loader-stage');
+  ELEMENTS.forEach(def => {
+    const div = document.createElement('div');
+    div.className = 'loader-el';
+    div.id = 'lel-' + def.id;
+    div.style.width = def.size + 'px';
+    div.style.height = def.size + 'px';
+    div.innerHTML = def.svg || def.html;
+    stage.appendChild(div);
+  });
+
+  // ── Dimensions ────────────────────────────────────────────────────────────
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+  const cx = W / 2, cy = H / 2;
+  const MIN_CENTER_DIST = Math.min(W, H) * 0.14;
+  const GAP = 14;
+
+  // ── Collision-free placement ───────────────────────────────────────────────
+  function placeWithoutOverlap() {
+    const placed = [], positions = [];
+    for (let i = 0; i < ELEMENTS.length; i++) {
+      const def = ELEMENTS[i];
+      let found = false, attempts = 0;
+      while (!found && attempts < 300) {
+        attempts++;
+        const x = GAP + Math.random() * (W - def.size - GAP * 2);
+        const y = GAP + Math.random() * (H - def.size - GAP * 2);
+        const dcx = (x + def.size / 2) - cx, dcy = (y + def.size / 2) - cy;
+        if (Math.sqrt(dcx * dcx + dcy * dcy) < MIN_CENTER_DIST) continue;
+        let overlaps = false;
+        for (const p of placed) {
+          if (x < p.x + p.w + GAP && x + def.size + GAP > p.x &&
+              y < p.y + p.h + GAP && y + def.size + GAP > p.y) {
+            overlaps = true; break;
+          }
+        }
+        if (overlaps) continue;
+        placed.push({ x, y, w: def.size, h: def.size });
+        positions.push({ x, y });
+        found = true;
+      }
+      if (!found) {
+        const angle = Math.random() * Math.PI * 2;
+        const r = Math.min(W, H) * (0.4 + Math.random() * 0.1);
+        const x = Math.max(GAP, Math.min(W - def.size - GAP, cx + Math.cos(angle) * r - def.size / 2));
+        const y = Math.max(GAP, Math.min(H - def.size - GAP, cy + Math.sin(angle) * r - def.size / 2));
+        placed.push({ x, y, w: def.size, h: def.size });
+        positions.push({ x, y });
+      }
+    }
+    return positions;
+  }
+
+  function explosionPositions() {
+    return ELEMENTS.map(def => {
+      const angle = Math.random() * Math.PI * 2;
+      const r = Math.max(W, H) * (0.85 + Math.random() * 0.5);
+      return { x: cx + Math.cos(angle) * r - def.size / 2, y: cy + Math.sin(angle) * r - def.size / 2 };
+    });
+  }
+
+  const spreads = placeWithoutOverlap();
+  const explodes = explosionPositions();
+  const DURATION = 2500; // ms for one-shot animation
+
+  // ── Easing ────────────────────────────────────────────────────────────────
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function easeInCubic(t) { return t * t * t; }
+  function easeInQuart(t) { return t * t * t * t; }
+  function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+  function easeOutExpo(t) { return t >= 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+
+  // ── Apply initial positions (visible before RAF starts) ───────────────────
+  ELEMENTS.forEach((def, i) => {
+    const el = document.getElementById('lel-' + def.id);
+    el.style.left = spreads[i].x + 'px';
+    el.style.top = spreads[i].y + 'px';
+    el.style.opacity = '1';
+    el.style.transform = 'scale(1)';
+  });
+
+  // ── Animation loop ────────────────────────────────────────────────────────
+  let rafStart = null;
+  let done = false;
+
+  function frame(ts) {
+    if (done) return;
+    if (!rafStart) rafStart = ts;
+    const p = Math.min(1, (ts - rafStart) / DURATION);
+
+    // Progress bar
+    const bar = document.getElementById('loader-bar');
+    if (p < 0.74) { bar.style.width = (p / 0.74 * 100) + '%'; bar.style.opacity = '1'; }
+    else if (p < 0.80) { bar.style.width = '100%'; bar.style.opacity = String(Math.max(0, 1 - (p - 0.74) / 0.06)); }
+    else { bar.style.width = '0%'; bar.style.opacity = '0'; }
+
+    // Core flash
+    const core = document.getElementById('loader-core');
+    if (p > 0.49 && p < 0.60) {
+      const f = Math.sin(((p - 0.49) / 0.11) * Math.PI);
+      core.style.transform = `scale(${1 + f * 18})`;
+      core.style.boxShadow = `0 0 ${f * 100}px ${f * 50}px rgba(201,100,66,${f * 0.95})`;
+    } else {
+      core.style.transform = 'scale(1)';
+      core.style.boxShadow = '0 0 14px 3px rgba(201,100,66,0.5)';
+    }
+
+    // Halos
+    ['loader-h1', 'loader-h2', 'loader-h3'].forEach((id, hi) => {
+      const el = document.getElementById(id);
+      if (p > 0.50 && p < 0.78) {
+        const t = easeOutQuart((p - 0.50) / 0.28);
+        el.style.transform = `translate(-50%,-50%) scale(${0.1 + t * 2.0})`;
+        el.style.opacity = String(Math.max(0, (0.6 - t * 0.65) * (1 - hi * 0.25)));
+      } else { el.style.opacity = '0'; }
+    });
+
+    // Glitch
+    const glitch = document.getElementById('loader-glitch');
+    if (p > 0.73 && p < 0.87) {
+      const intensity = Math.sin(((p - 0.73) / 0.14) * Math.PI);
+      const sy = Math.random() * 70;
+      glitch.style.opacity = String(intensity * 0.65);
+      glitch.style.background = `linear-gradient(transparent ${sy}%, rgba(201,100,66,0.1) ${sy}%, rgba(201,100,66,0.1) ${sy + 28}%, transparent ${sy + 28}%)`;
+      glitch.style.transform = `translateX(${(Math.random() - 0.5) * 12 * intensity}px)`;
+    } else { glitch.style.opacity = '0'; }
+
+    // Elements
+    ELEMENTS.forEach((def, i) => {
+      const el = document.getElementById('lel-' + def.id);
+      const sp = spreads[i], ex = explodes[i];
+      const hw = def.size / 2;
+      const fx = cx - hw, fy = cy - hw;
+      let x, y, opacity, scale;
+
+      if (p < 0.10) {
+        x = sp.x; y = sp.y; opacity = 1; scale = 1;
+      } else if (p < 0.50) {
+        const t = easeOutExpo((p - 0.10) / 0.40);
+        x = lerp(sp.x, fx, t);
+        y = lerp(sp.y, fy, t);
+        scale = Math.max(0.04, 1.0 - t * 1.04);
+        opacity = t > 0.88 ? Math.max(0, 1 - (t - 0.88) / 0.12) : 1;
+      } else if (p < 0.57) {
+        x = fx; y = fy; opacity = 0; scale = 0.04;
+      } else if (p < 0.73) {
+        const t = easeOutQuart((p - 0.57) / 0.16);
+        x = lerp(fx, ex.x, t);
+        y = lerp(fy, ex.y, t);
+        scale = lerp(1.5, 0.25, t);
+        opacity = Math.max(0, 1 - easeInCubic(t * 1.1));
+      } else {
+        x = sp.x; y = sp.y; opacity = 0; scale = 1;
+      }
+
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.style.opacity = String(opacity);
+      el.style.transform = `scale(${scale})`;
+    });
+
+    // Continue or finish
+    if (p < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      done = true;
+      exit();
+    }
+  }
+
+  // ── Exit ──────────────────────────────────────────────────────────────────
+  function exit() {
+    const loader = document.getElementById('loader');
+    if (!loader) return;
+    loader.style.opacity = '0';
+    setTimeout(() => {
+      loader.remove();
+      document.body.style.overflow = '';
+      document.dispatchEvent(new CustomEvent('loaderDone'));
+    }, 300);
+  }
+
+  requestAnimationFrame(frame);
+})();
+</script>
+```
+
+- [ ] **Step 2: Check for syntax errors**
+
+```bash
+cd /home/zeta/portfolio-astro
+npx astro check 2>&1 | head -40
+```
+
+Expected: no errors from `Loader.astro`.
+
+---
+
+## Task 3: Mount `<Loader />` in `Layout.astro` and wire hero reveal
+
+**Files:**
+- Modify: `src/layouts/Layout.astro`
+
+The loader must be the first thing in `<body>`. The hero reveal currently fires on `window.addEventListener('load', ...)` — this should change to `document.addEventListener('loaderDone', ...)` so the hero animates in after the loader exits, not while it's covering the page.
+
+- [ ] **Step 1: Import `Loader` in the frontmatter of `Layout.astro`**
+
+In `src/layouts/Layout.astro`, the frontmatter block starts at line 1. Add the import:
+
+```astro
+---
+import type { Translations } from '../i18n/en';
+import type { Lang } from '../i18n/utils';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Loader from '../components/Loader.astro';
+
+interface Props {
+  t: Translations;
+  lang: Lang;
+}
+
+const { t, lang } = Astro.props;
+---
+```
+
+- [ ] **Step 2: Mount `<Loader />` as first child of `<body>` and add `overflow: hidden`**
+
+Find this section in the `<body>` (around line 76):
+
+```astro
+<body>
+  <Nav t={t} lang={lang} />
+```
+
+Replace it with:
+
+```astro
+<body style="overflow: hidden">
+  <Loader />
+  <Nav t={t} lang={lang} />
+```
+
+- [ ] **Step 3: Change hero reveal trigger from `window load` to `loaderDone`**
+
+Find this block in the `<script>` section of `Layout.astro`:
+
+```js
+    // Hero reveal
+    window.addEventListener('load', () => {
+      ['hero-avatar','hero-tag','hero-headline','hero-body','hero-meta'].forEach((id, i) => {
+        setTimeout(() => document.getElementById(id)?.classList.add('visible'), 100 + i * 200);
+      });
+    });
+```
+
+Replace it with:
+
+```js
+    // Hero reveal — fires after loader exits
+    document.addEventListener('loaderDone', () => {
+      ['hero-avatar','hero-tag','hero-headline','hero-body','hero-meta'].forEach((id, i) => {
+        setTimeout(() => document.getElementById(id)?.classList.add('visible'), 100 + i * 200);
+      });
+    }, { once: true });
+```
+
+- [ ] **Step 4: Run type check**
+
+```bash
+cd /home/zeta/portfolio-astro
+npx astro check 2>&1 | head -40
+```
+
+Expected: no new errors.
+
+---
+
+## Task 4: Manual browser verification
+
+**Files:** None
+
+- [ ] **Step 1: Start the dev server**
+
+```bash
+cd /home/zeta/portfolio-astro
+npm run dev
+```
+
+Expected: `Local: http://localhost:4321/` in output.
+
+- [ ] **Step 2: Open http://localhost:4321 and verify the animation plays**
+
+Checklist:
+- [ ] Dark `#141413` overlay appears immediately on load
+- [ ] 27 icons/badges visible spread across the screen
+- [ ] Scanline moves top-to-bottom
+- [ ] Terracotta progress bar fills along the bottom
+- [ ] Elements zoom toward center with far ones visibly faster
+- [ ] Core dot flashes with terracotta glow at convergence
+- [ ] Halo rings expand outward
+- [ ] Elements burst off-screen
+- [ ] Glitch scanline flickers
+- [ ] Overlay fades out (~2.5s total), portfolio appears
+- [ ] Hero text animates in after loader exits (not before)
+- [ ] No horizontal scrollbar, body scroll enabled after loader exits
+
+- [ ] **Step 3: Verify `prefers-reduced-motion` skips loader**
+
+Open DevTools → Rendering tab → check "Emulate CSS media feature prefers-reduced-motion: reduce".  
+Reload: page should load immediately with no loader overlay.
+
+- [ ] **Step 4: Verify Spanish route also shows loader**
+
+Navigate to http://localhost:4321/es/ — loader should play identically.
+
+- [ ] **Step 5: Stop dev server and commit**
+
+```bash
+cd /home/zeta/portfolio-astro
+git add src/components/Loader.astro src/layouts/Layout.astro
+git commit -m "feat: add loading screen animation with black-hole convergence effect"
+```
+
+---
+
+## Task 5: Production build verification
+
+**Files:** None
+
+- [ ] **Step 1: Build and preview**
+
+```bash
+cd /home/zeta/portfolio-astro
+npm run build && npm run preview
+```
+
+Expected: build completes with no errors. Preview available at `http://localhost:4321`.
+
+- [ ] **Step 2: Verify animation plays in preview**
+
+Open http://localhost:4321 — repeat the checklist from Task 4 Step 2.
+
+- [ ] **Step 3: Deploy to Vercel**
+
+```bash
+cd /home/zeta/portfolio-astro
+vercel --prod --yes
+```
+
+Expected: deployment URL printed. Open it in browser and verify the loader plays on the live site.

@@ -3,6 +3,8 @@ import type { Translations } from '../i18n/en';
 import type { Lang } from '../i18n/utils';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import Loader from '../components/Loader.astro';
+import { Analytics } from '@vercel/analytics/astro';
 
 interface Props {
   t: Translations;
@@ -73,10 +75,12 @@ const { t, lang } = Astro.props;
     .section-divider{width:100%;height:1px;background:var(--border-warm)}
   </style>
 </head>
-<body>
+<body style="overflow: hidden">
+  <Loader />
   <Nav t={t} lang={lang} />
   <slot />
   <Footer t={t} />
+  <Analytics />
   <script>
     // Nav dark/light switch
     const nav = document.getElementById('nav');
@@ -95,12 +99,12 @@ const { t, lang } = Astro.props;
       entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80); });
     }, { threshold: 0.05 });
     document.querySelectorAll('.timeline-item').forEach(el => tlObs.observe(el));
-    // Hero reveal
-    window.addEventListener('load', () => {
+    // Hero reveal — fires after loader exits
+    document.addEventListener('loaderDone', () => {
       ['hero-avatar','hero-tag','hero-headline','hero-body','hero-meta'].forEach((id, i) => {
         setTimeout(() => document.getElementById(id)?.classList.add('visible'), 100 + i * 200);
       });
-    });
+    }, { once: true });
   </script>
 </body>
 </html>
