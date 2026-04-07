@@ -17,7 +17,7 @@ export const es: Translations = {
 
   hero: {
     tag: 'Ingeniero Fullstack Senior',
-    headline1: 'Construyendo los',
+    headline1: 'Creando los',
     headline2: 'sistemas',
     headline3: 'que mueven la web.',
     body: '12 años creando productos de alto rendimiento — desde plataformas Web3 y wallets crypto hasta dispositivos AR/VR y Ad-Tech. Ahora mismo, dando forma al futuro de los Design Systems en Happening.',
