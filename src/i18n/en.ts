@@ -3,7 +3,7 @@ export const en = {
   meta: {
     title: 'Luis Tiburcio — Fullstack Senior Software Engineer',
     description:
-      'Portfolio of Luis Tiburcio De la Cruz Fernandez, Fullstack Senior Software Engineer with 12+ years building high-performance web products.',
+      'Fullstack Senior Software Engineer with 12+ years building products at scale — Web3, XR, real-time systems. Currently at Super · Superbet.',
   },
 
   // ── Nav ─────────────────────────────────────────

@@ -4,7 +4,7 @@ export const es: Translations = {
   meta: {
     title: 'Luis Tiburcio — Ingeniero Fullstack Senior',
     description:
-      'Portfolio de Luis Tiburcio De la Cruz Fernandez, Ingeniero Fullstack Senior con más de 12 años construyendo productos web de alto rendimiento.',
+      'Ingeniero Fullstack Senior con 12+ años construyendo productos a escala — Web3, XR, sistemas en tiempo real. Actualmente en Super · Superbet.',
   },
 
   nav: {
