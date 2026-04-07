@@ -1,8 +1,22 @@
 ---
 import type { Translations } from '../i18n/en';
+import { press } from '../data/press';
+
 interface Props { t: Translations; }
 const { t } = Astro.props;
 const exp = t.experience;
+
+const companyKeys = [
+  'happening',
+  'chiliz',
+  'bridder',
+  'waveApplication',
+  'solera',
+  'streye',
+  'everis',
+  'navionTruck',
+  'coordaNetworks',
+];
 ---
 <section class="experience" id="experience">
   <div class="experience__inner">
@@ -11,24 +25,47 @@ const exp = t.experience;
       <span class="experience__count reveal">{exp.count}</span>
     </div>
     <div class="timeline">
-      {exp.jobs.map((job, _i) => (
-        <div class="timeline-item">
-          <div class="timeline-item__years">
-            <strong>{job.period}</strong>
-            {job.company}
-          </div>
-          <div class="timeline-item__content">
-            <h3 class="timeline-item__role">{job.role}</h3>
-            <p class="timeline-item__company">{job.subtitle}</p>
-            <p class="timeline-item__desc" set:html={job.desc} />
-            <div class="timeline-item__tags">
-              {job.tags.map((tag, idx) => (
-                <span class={`tag--dark${job.accent.includes(idx) ? ' tag--dark-accent' : ''}`}>{tag}</span>
-              ))}
+      {exp.jobs.map((job, i) => {
+        const articles = press[companyKeys[i]] ?? [];
+        return (
+          <div class="timeline-item">
+            <div class="timeline-item__years">
+              <strong>{job.period}</strong>
+              {job.company}
+            </div>
+            <div class="timeline-item__content">
+              <h3 class="timeline-item__role">{job.role}</h3>
+              <p class="timeline-item__company">{job.subtitle}</p>
+              <p class="timeline-item__desc" set:html={job.desc} />
+              <div class="timeline-item__tags">
+                {job.tags.map((tag, idx) => (
+                  <span class={`tag--dark${job.accent.includes(idx) ? ' tag--dark-accent' : ''}`}>{tag}</span>
+                ))}
+              </div>
+              {articles.length > 0 && (
+                <div class="press-row">
+                  <span class="press-row__label">{exp.pressLabel}</span>
+                  {articles.map(article => (
+                    <a
+                      class="press-badge"
+                      href={article.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <div class="press-badge__logo">{article.logoText}</div>
+                      <div class="press-badge__body">
+                        <span class="press-badge__source">{article.source}</span>
+                        <span class="press-badge__headline">{article.headline}</span>
+                      </div>
+                      <span class="press-badge__arrow">↗</span>
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   </div>
 </section>
@@ -86,5 +123,84 @@ const exp = t.experience;
     .experience__header { margin-bottom: var(--space-7); }
     .timeline-item { grid-template-columns: 1fr; gap: var(--space-3); }
     .timeline-item__years { display: flex; align-items: center; gap: var(--space-3); }
+  }
+
+  /* ── Press badges ───────────────────────────── */
+  .press-row {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: var(--space-3);
+    margin-top: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .press-row__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(176,174,165,0.4);
+  }
+  .press-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.03);
+    box-shadow: 0px 0px 0px 1px rgba(255,255,255,0.06);
+    text-decoration: none;
+    max-width: 520px;
+    transition: background var(--ease-color), box-shadow var(--ease-shadow);
+  }
+  .press-badge:hover {
+    background: rgba(255,255,255,0.06);
+    box-shadow: 0px 0px 0px 1px rgba(255,255,255,0.10);
+  }
+  .press-badge__logo {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text-light);
+  }
+  .press-badge__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .press-badge__source {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    color: var(--terracotta);
+  }
+  .press-badge__headline {
+    font-family: var(--font-serif);
+    font-size: 13px;
+    color: rgba(176,174,165,0.85);
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .press-badge__arrow {
+    flex-shrink: 0;
+    font-size: 12px;
+    color: rgba(176,174,165,0.25);
+    transition: color var(--ease-color);
+  }
+  .press-badge:hover .press-badge__arrow {
+    color: rgba(176,174,165,0.6);
   }
 </style>
