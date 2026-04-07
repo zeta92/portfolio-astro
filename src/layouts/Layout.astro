@@ -1,0 +1,106 @@
+---
+import type { Translations } from '../i18n/en';
+import type { Lang } from '../i18n/utils';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  t: Translations;
+  lang: Lang;
+}
+
+const { t, lang } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={t.meta.description} />
+  <title>{t.meta.title}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="alternate" hreflang="en" href="/" />
+  <link rel="alternate" hreflang="es" href="/es/" />
+  <style is:global>
+    /* ─────────────────────────────────────────────
+       DESIGN TOKENS  (Claude × Cursor × Vercel)
+    ───────────────────────────────────────────── */
+    :root {
+      --parchment:    #f5f4ed;
+      --ivory:        #faf9f5;
+      --warm-sand:    #e8e6dc;
+      --near-black:   #141413;
+      --dark-surface: #30302e;
+      --text-primary:   #141413;
+      --text-secondary: #5e5d59;
+      --text-tertiary:  #87867f;
+      --text-light:     #b0aea5;
+      --terracotta:  #c96442;
+      --coral:       #d97757;
+      --border-light: #f0eee6;
+      --border-warm:  #e8e6dc;
+      --shadow-border:   0px 0px 0px 1px rgba(20,20,19,0.10);
+      --shadow-border-md:0px 0px 0px 1px rgba(20,20,19,0.18);
+      --shadow-card:     0px 0px 0px 1px rgba(20,20,19,0.08), 0px 2px 2px rgba(20,20,19,0.04), 0px 8px 24px rgba(20,20,19,0.06);
+      --shadow-card-dark:0px 0px 0px 1px rgba(255,255,255,0.06), 0px 4px 24px rgba(0,0,0,0.30);
+      --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px;
+      --space-6:32px; --space-7:48px; --space-8:64px; --space-9:96px; --space-10:128px;
+      --font-display:'Syne',system-ui,Arial,sans-serif;
+      --font-serif:'Crimson Pro',Georgia,'Times New Roman',serif;
+      --font-mono:'JetBrains Mono','SFMono-Regular',Menlo,Consolas,monospace;
+      --ease-color:150ms ease;
+      --ease-shadow:200ms ease;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;font-size:16px}
+    body{background-color:var(--parchment);color:var(--text-primary);font-family:var(--font-serif);font-weight:400;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    a{color:inherit;text-decoration:none}
+    ul,ol{list-style:none}
+    img{display:block;max-width:100%}
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    .section-label{font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--terracotta);margin-bottom:var(--space-4);display:flex;align-items:center;gap:8px}
+    .section-label::before{content:'';display:block;width:24px;height:1px;background:var(--terracotta)}
+    .tag{font-family:var(--font-mono);font-size:12px;font-weight:400;letter-spacing:0.03em;color:var(--text-secondary);padding:5px 12px;border-radius:9999px;background:var(--ivory);box-shadow:var(--shadow-border);transition:box-shadow var(--ease-shadow),color var(--ease-color),background var(--ease-color);cursor:default}
+    .tag:hover{box-shadow:var(--shadow-border-md);color:var(--text-primary);background:var(--warm-sand)}
+    .tag--accent{background:rgba(201,100,66,0.1);color:var(--terracotta);box-shadow:0px 0px 0px 1px rgba(201,100,66,0.2)}
+    .tag--accent:hover{background:rgba(201,100,66,0.18);box-shadow:0px 0px 0px 1px rgba(201,100,66,0.35)}
+    .tag--dark{font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;color:rgba(176,174,165,0.7);padding:4px 10px;border-radius:9999px;background:rgba(255,255,255,0.05);box-shadow:0px 0px 0px 1px rgba(255,255,255,0.08);transition:background var(--ease-color),color var(--ease-color)}
+    .tag--dark:hover{background:rgba(255,255,255,0.09);color:var(--text-light)}
+    .tag--dark-accent{color:rgba(201,100,66,0.85);background:rgba(201,100,66,0.08);box-shadow:0px 0px 0px 1px rgba(201,100,66,0.18)}
+    .section-divider{width:100%;height:1px;background:var(--border-warm)}
+  </style>
+</head>
+<body>
+  <Nav t={t} lang={lang} />
+  <slot />
+  <Footer t={t} />
+  <script>
+    // Nav dark/light switch
+    const nav = document.getElementById('nav');
+    const hero = document.getElementById('hero');
+    if (nav && hero) {
+      const obs = new IntersectionObserver(([e]) => nav.classList.toggle('nav--dark', !e.isIntersecting), { threshold: 0.1 });
+      obs.observe(hero);
+    }
+    // Scroll reveal
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+    // Timeline stagger
+    const tlObs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80); });
+    }, { threshold: 0.05 });
+    document.querySelectorAll('.timeline-item').forEach(el => tlObs.observe(el));
+    // Hero reveal
+    window.addEventListener('load', () => {
+      ['hero-avatar','hero-tag','hero-headline','hero-body','hero-meta'].forEach((id, i) => {
+        setTimeout(() => document.getElementById(id)?.classList.add('visible'), 100 + i * 200);
+      });
+    });
+  </script>
+</body>
+</html>

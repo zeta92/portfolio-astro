@@ -1,0 +1,90 @@
+---
+import type { Translations } from '../i18n/en';
+interface Props { t: Translations; }
+const { t } = Astro.props;
+const exp = t.experience;
+---
+<section class="experience" id="experience">
+  <div class="experience__inner">
+    <div class="experience__header">
+      <h2 class="experience__heading reveal">{exp.heading}</h2>
+      <span class="experience__count reveal">{exp.count}</span>
+    </div>
+    <div class="timeline">
+      {exp.jobs.map((job, _i) => (
+        <div class="timeline-item">
+          <div class="timeline-item__years">
+            <strong>{job.period}</strong>
+            {job.company}
+          </div>
+          <div class="timeline-item__content">
+            <h3 class="timeline-item__role">{job.role}</h3>
+            <p class="timeline-item__company">{job.subtitle}</p>
+            <p class="timeline-item__desc" set:html={job.desc} />
+            <div class="timeline-item__tags">
+              {job.tags.map((tag, idx) => (
+                <span class={`tag--dark${job.accent.includes(idx) ? ' tag--dark-accent' : ''}`}>{tag}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .experience { background: var(--near-black); padding: var(--space-10) var(--space-8); }
+  .experience__inner { max-width: 1280px; margin: 0 auto; }
+  .experience__header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: var(--space-9); flex-wrap: wrap; gap: var(--space-4);
+  }
+  .experience__heading {
+    font-family: var(--font-display); font-size: clamp(36px,5vw,64px);
+    font-weight: 800; letter-spacing: -0.03em; line-height: 1; color: var(--ivory);
+  }
+  .experience__count {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-tertiary); padding-bottom: 4px;
+  }
+  .timeline { display: flex; flex-direction: column; gap: 2px; }
+  .timeline-item {
+    display: grid; grid-template-columns: 140px 1fr; gap: var(--space-6);
+    padding: var(--space-6) 0; border-top: 1px solid rgba(255,255,255,0.06);
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    cursor: pointer;
+  }
+  .timeline-item.visible { opacity: 1; transform: translateY(0); }
+  .timeline-item:last-child { border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .timeline-item:hover .timeline-item__content { padding-left: var(--space-4); }
+  .timeline-item__content { transition: padding-left 0.25s ease; }
+  .timeline-item__years {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em;
+    color: var(--text-tertiary); padding-top: 3px; line-height: 1.5;
+  }
+  .timeline-item__years strong {
+    display: block; font-family: var(--font-display); font-size: 13px; font-weight: 700;
+    letter-spacing: 0.04em; color: var(--text-light); margin-bottom: 2px;
+  }
+  .timeline-item__role {
+    font-family: var(--font-display); font-size: clamp(20px,2.5vw,28px);
+    font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; color: var(--ivory); margin-bottom: 4px;
+  }
+  .timeline-item__company {
+    font-family: var(--font-serif); font-size: 16px; font-style: italic;
+    color: var(--terracotta); margin-bottom: var(--space-3);
+  }
+  .timeline-item__desc {
+    font-family: var(--font-serif); font-size: 16px; line-height: 1.65;
+    color: var(--text-light); max-width: 64ch; margin-bottom: var(--space-4);
+  }
+  .timeline-item__tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  @media (max-width: 900px) {
+    .experience { padding: var(--space-8) var(--space-5); }
+    .experience__header { margin-bottom: var(--space-7); }
+    .timeline-item { grid-template-columns: 1fr; gap: var(--space-3); }
+    .timeline-item__years { display: flex; align-items: center; gap: var(--space-3); }
+  }
+</style>

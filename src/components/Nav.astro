@@ -1,0 +1,70 @@
+---
+import type { Translations } from '../i18n/en';
+import type { Lang } from '../i18n/utils';
+import { getLocalePath } from '../i18n/utils';
+
+interface Props { t: Translations; lang: Lang; }
+const { t, lang } = Astro.props;
+const otherLang = lang === 'en' ? 'es' : 'en';
+---
+<nav class="nav" id="nav">
+  <span class="nav__logo">Luis Tiburcio</span>
+  <div class="nav__links">
+    <a href={`${getLocalePath(lang)}#about`}>{t.nav.about}</a>
+    <a href={`${getLocalePath(lang)}#experience`}>{t.nav.experience}</a>
+    <a href={`${getLocalePath(lang)}#contact`}>{t.nav.contact}</a>
+    <a href={getLocalePath(otherLang)} class="nav__lang">{t.nav.langSwitch}</a>
+    <a href="mailto:luist.webdesigner@gmail.com" class="nav__cta">{t.nav.hire}</a>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: 56px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 var(--space-8);
+    background: rgba(245,244,237,0.88);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0px 1px 0px rgba(20,20,19,0.08);
+    transition: background var(--ease-color);
+  }
+  :global(.nav--dark) { background: rgba(20,20,19,0.90) !important; }
+  .nav__logo {
+    font-family: var(--font-display); font-size: 15px; font-weight: 700;
+    letter-spacing: 0.04em; color: var(--text-primary); text-transform: uppercase;
+    transition: color var(--ease-color);
+  }
+  :global(.nav--dark) .nav__logo { color: var(--ivory); }
+  .nav__links { display: flex; align-items: center; gap: var(--space-6); }
+  .nav__links a {
+    font-family: var(--font-display); font-size: 13px; font-weight: 500;
+    letter-spacing: 0.04em; color: var(--text-secondary); text-transform: uppercase;
+    transition: color var(--ease-color);
+  }
+  .nav__links a:hover { color: var(--terracotta); }
+  :global(.nav--dark) .nav__links a { color: var(--text-light); }
+  :global(.nav--dark) .nav__links a:hover { color: var(--coral); }
+  .nav__lang {
+    border-radius: 6px;
+    box-shadow: var(--shadow-border);
+    padding: 5px 10px !important;
+    background: var(--ivory);
+    color: var(--text-secondary) !important;
+    transition: background var(--ease-color), box-shadow var(--ease-shadow) !important;
+  }
+  .nav__lang:hover { background: var(--warm-sand) !important; box-shadow: var(--shadow-border-md) !important; }
+  :global(.nav--dark) .nav__lang { background: rgba(255,255,255,0.07) !important; }
+  .nav__cta {
+    font-family: var(--font-display); font-size: 13px; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 8px 16px; border-radius: 8px;
+    background: var(--terracotta); color: var(--ivory) !important;
+    box-shadow: var(--shadow-border);
+    transition: background var(--ease-color), box-shadow var(--ease-shadow);
+  }
+  .nav__cta:hover { background: var(--coral); }
+  @media (max-width: 900px) {
+    .nav { padding: 0 var(--space-5); }
+    .nav__links a:not(.nav__cta):not(.nav__lang) { display: none; }
+  }
+</style>

@@ -1,0 +1,92 @@
+---
+import type { Translations } from '../i18n/en';
+interface Props { t: Translations; }
+const { t } = Astro.props;
+const h = t.hero;
+---
+<section class="hero" id="hero">
+  <div class="hero__bg-number">12</div>
+  <img src="/avatar.jpg" alt="Luis Tiburcio" class="hero__avatar" id="hero-avatar" />
+  <p class="hero__tag" id="hero-tag">{h.tag}</p>
+  <h1 class="hero__headline" id="hero-headline">
+    {h.headline1}<br /><em>{h.headline2}</em><br />{h.headline3}
+  </h1>
+  <p class="hero__body" id="hero-body">{h.body}</p>
+  <div class="hero__meta" id="hero-meta">
+    <span class="hero__meta-item"><span class="hero__meta-dot"></span>{h.meta1}</span>
+    <span class="hero__meta-item"><span class="hero__meta-dot"></span>{h.meta2}</span>
+    <span class="hero__meta-item"><span class="hero__meta-dot"></span>{h.meta3}</span>
+  </div>
+  <div class="hero__scroll">{h.scroll}</div>
+</section>
+
+<style>
+  .hero {
+    min-height: 100vh; background: var(--near-black);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: calc(56px + var(--space-10)) var(--space-8) var(--space-10);
+    position: relative; overflow: hidden;
+  }
+  .hero__bg-number {
+    position: absolute; top: 50%; right: -0.05em; transform: translateY(-50%);
+    font-family: var(--font-display); font-size: clamp(180px,28vw,400px);
+    font-weight: 800; line-height: 1; color: rgba(255,255,255,0.03);
+    pointer-events: none; user-select: none; letter-spacing: -0.04em;
+  }
+  .hero__avatar {
+    width: 72px; height: 72px; border-radius: 50%; object-fit: cover;
+    box-shadow: 0px 0px 0px 2px var(--terracotta), 0px 0px 0px 4px rgba(201,100,66,0.2);
+    margin-bottom: var(--space-5);
+    opacity: 0; transform: scale(0.9);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .hero__avatar.visible { opacity: 1; transform: scale(1); }
+  .hero__tag {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--terracotta);
+    margin-bottom: var(--space-5);
+    opacity: 0; transform: translateY(12px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .hero__tag.visible { opacity: 1; transform: translateY(0); }
+  .hero__headline {
+    font-family: var(--font-display); font-size: clamp(52px,9vw,120px);
+    font-weight: 800; line-height: 0.95; letter-spacing: -0.03em;
+    color: var(--ivory); max-width: 14ch; margin-bottom: var(--space-6);
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s;
+  }
+  .hero__headline.visible { opacity: 1; transform: translateY(0); }
+  .hero__headline em { font-style: normal; color: var(--terracotta); }
+  .hero__body {
+    font-family: var(--font-serif); font-size: clamp(18px,2.2vw,22px);
+    font-weight: 300; font-style: italic; line-height: 1.55;
+    color: var(--text-light); max-width: 52ch; margin-bottom: var(--space-7);
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
+  }
+  .hero__body.visible { opacity: 1; transform: translateY(0); }
+  .hero__meta {
+    display: flex; align-items: center; gap: var(--space-6); flex-wrap: wrap;
+    opacity: 0; transform: translateY(12px);
+    transition: opacity 0.6s ease 0.35s, transform 0.6s ease 0.35s;
+  }
+  .hero__meta.visible { opacity: 1; transform: translateY(0); }
+  .hero__meta-item {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 12px;
+    letter-spacing: 0.06em; color: var(--text-tertiary); text-transform: uppercase;
+  }
+  .hero__meta-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--terracotta); flex-shrink: 0; }
+  .hero__scroll {
+    position: absolute; bottom: var(--space-7); right: var(--space-8);
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-tertiary); writing-mode: vertical-rl; transform: rotate(180deg);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse { 0%,100%{opacity:0.4} 50%{opacity:0.9} }
+  @media (max-width: 900px) {
+    .hero { padding: calc(56px + var(--space-8)) var(--space-5) var(--space-8); }
+  }
+</style>
