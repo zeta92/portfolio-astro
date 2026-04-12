@@ -5,166 +5,348 @@ const { t } = Astro.props;
 const a = t.about;
 const sk = a.skillGroups;
 ---
-<section class="about" id="about">
-  <div class="about__intro">
-    <p class="section-label fade-up">{a.label}</p>
-    <h2 class="about__heading slide-left">{a.heading1}<br />{a.heading2}</h2>
-    <p class="about__text fade-up" set:html={a.body1} />
-    <p class="about__text fade-up" set:html={a.body2} />
-    <div class="about__stats">
-      <div class="stat scale-in"><div class="stat__number">12<span>+</span></div><div class="stat__label">{a.stats.years}</div></div>
-      <div class="stat scale-in"><div class="stat__number">9</div><div class="stat__label">{a.stats.companies}</div></div>
-      <div class="stat scale-in"><div class="stat__number">3</div><div class="stat__label">{a.stats.leadership}</div></div>
-      <div class="stat scale-in"><div class="stat__number">2M<span>+</span></div><div class="stat__label">{a.stats.users}</div></div>
-    </div>
-  </div>
 
-  <div class="skills-grid">
-    <div class="fade-up">
-      <p class="skills-group__title">{sk.frontend}</p>
-      <div class="skills-group__tags">
-        <span class="tag tag--accent">React.js</span><span class="tag tag--accent">Next.js</span>
-        <span class="tag tag--accent">Vue.js</span><span class="tag tag--accent">React Native</span>
-        <span class="tag">Angular</span><span class="tag">Redux</span>
-        <span class="tag">Webpack</span><span class="tag">Styled Components</span><span class="tag">Three.js</span>
+<!--
+  About Scene — 320vh
+  Sticky stage (100vh) pins while the extra 220vh drives scroll-driven animations.
+  Phase 1 (Intro):   heading + body text, scroll 400-570vh
+  Phase 2 (Skills):  6 category cards zoom in one-by-one, scroll 465-600vh
+-->
+<section class="as" id="about">
+  <div class="as__stage">
+
+    <!-- Ambient glow -->
+    <div class="as__glow" aria-hidden="true"></div>
+
+    <!-- ── Phase 1: Intro ── -->
+    <div class="as__intro">
+      <p class="as__label">{a.label}</p>
+      <h2 class="as__heading">{a.heading1}<br />{a.heading2}</h2>
+      <p class="as__body" set:html={a.body1} />
+      <p class="as__body" set:html={a.body2} />
+    </div>
+
+    <!-- ── Phase 2: Skills / Tech stack ── -->
+    <div class="as__skills">
+      <p class="as__skills-eyebrow">Tech stack</p>
+      <div class="as__skills-grid">
+        <div class="as__skill as__skill--1">
+          <p class="as__skill-title">{sk.frontend}</p>
+          <div class="as__skill-tags">
+            <span class="tag tag--accent">React.js</span>
+            <span class="tag tag--accent">Next.js</span>
+            <span class="tag tag--accent">Vue.js</span>
+            <span class="tag tag--accent">React Native</span>
+            <span class="tag">Angular</span>
+            <span class="tag">Redux</span>
+            <span class="tag">Webpack</span>
+            <span class="tag">Three.js</span>
+          </div>
+        </div>
+        <div class="as__skill as__skill--2">
+          <p class="as__skill-title">{sk.designSystems}</p>
+          <div class="as__skill-tags">
+            <span class="tag tag--accent">Design Systems</span>
+            <span class="tag tag--accent">Figma Code Connect</span>
+            <span class="tag tag--accent">Figma to Code</span>
+            <span class="tag">Storybook</span>
+            <span class="tag">Component Libraries</span>
+            <span class="tag">AI-assisted Dev</span>
+          </div>
+        </div>
+        <div class="as__skill as__skill--3">
+          <p class="as__skill-title">{sk.backend}</p>
+          <div class="as__skill-tags">
+            <span class="tag tag--accent">Node.js</span>
+            <span class="tag tag--accent">GraphQL</span>
+            <span class="tag">Express</span>
+            <span class="tag">Strapi</span>
+            <span class="tag">RESTful APIs</span>
+            <span class="tag">Java</span>
+            <span class="tag">PHP</span>
+          </div>
+        </div>
+        <div class="as__skill as__skill--4">
+          <p class="as__skill-title">{sk.cloud}</p>
+          <div class="as__skill-tags">
+            <span class="tag tag--accent">AWS</span>
+            <span class="tag">Firebase</span>
+            <span class="tag">CI/CD</span>
+            <span class="tag">CircleCI</span>
+            <span class="tag">Docker</span>
+            <span class="tag">CodePush</span>
+          </div>
+        </div>
+        <div class="as__skill as__skill--5">
+          <p class="as__skill-title">{sk.data}</p>
+          <div class="as__skill-tags">
+            <span class="tag">MongoDB</span>
+            <span class="tag">PostgreSQL</span>
+            <span class="tag">MySQL</span>
+            <span class="tag">Oracle / PLSQL</span>
+          </div>
+        </div>
+        <div class="as__skill as__skill--6">
+          <p class="as__skill-title">{sk.realtime}</p>
+          <div class="as__skill-tags">
+            <span class="tag tag--accent">Web3</span>
+            <span class="tag tag--accent">WebRTC</span>
+            <span class="tag">WebSockets</span>
+            <span class="tag">Socket.IO</span>
+            <span class="tag">DFNS</span>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="fade-up">
-      <p class="skills-group__title">{sk.designSystems}</p>
-      <div class="skills-group__tags">
-        <span class="tag tag--accent">Design Systems</span><span class="tag tag--accent">Figma Code Connect</span>
-        <span class="tag tag--accent">Figma to Code</span><span class="tag">Storybook</span>
-        <span class="tag">Component Libraries</span><span class="tag">AI-assisted Dev</span>
-      </div>
-    </div>
-    <div class="fade-up">
-      <p class="skills-group__title">{sk.backend}</p>
-      <div class="skills-group__tags">
-        <span class="tag tag--accent">Node.js</span><span class="tag tag--accent">GraphQL</span>
-        <span class="tag">Express</span><span class="tag">Strapi</span>
-        <span class="tag">RESTful APIs</span><span class="tag">Java</span><span class="tag">PHP</span>
-      </div>
-    </div>
-    <div class="fade-up">
-      <p class="skills-group__title">{sk.cloud}</p>
-      <div class="skills-group__tags">
-        <span class="tag tag--accent">AWS</span><span class="tag">Firebase</span>
-        <span class="tag">CI/CD</span><span class="tag">CircleCI</span>
-        <span class="tag">Docker</span><span class="tag">CodePush</span><span class="tag">AppCenter</span>
-      </div>
-    </div>
-    <div class="fade-up">
-      <p class="skills-group__title">{sk.data}</p>
-      <div class="skills-group__tags">
-        <span class="tag">MongoDB</span><span class="tag">PostgreSQL</span>
-        <span class="tag">MySQL</span><span class="tag">Oracle / PLSQL</span>
-      </div>
-    </div>
-    <div class="fade-up">
-      <p class="skills-group__title">{sk.realtime}</p>
-      <div class="skills-group__tags">
-        <span class="tag tag--accent">Web3</span><span class="tag tag--accent">WebRTC</span>
-        <span class="tag">WebSockets</span><span class="tag">Socket.IO</span><span class="tag">DFNS</span>
-      </div>
-    </div>
+
   </div>
 </section>
 <div class="section-divider"></div>
 
 <style>
-  .about {
-    background: var(--bg-surface);
-    padding: var(--space-10) var(--space-8);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-9);
-    align-items: start;
-    max-width: 1280px;
-    margin: 0 auto;
+  /* ──────────────────────────────────────────────
+     SCENE: 320vh — gives 220vh of sticky scroll travel
+     Section starts at 400vh (after 400vh Hero).
+     Sticky activates at scroll 400vh, releases at 620vh.
+  ────────────────────────────────────────────── */
+  .as {
+    height: 320vh;
+    position: relative;
   }
-  .about__intro { position: sticky; top: calc(60px + var(--space-6)); }
 
-  .about__heading {
-    font-family: var(--font-sans);
-    font-size: clamp(32px, 4vw, 52px);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.05;
-    color: var(--text-primary);
+  /* STAGE: sticky 100vh viewport */
+  .as__stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    background: var(--bg-surface);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Ambient glow — right side */
+  .as__glow {
+    position: absolute;
+    top: 50%; right: -5%;
+    transform: translateY(-50%);
+    width: 55%; height: 80%;
+    background: radial-gradient(ellipse at 100% 50%, rgba(124,58,237,0.10) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─────────────── Phase 1: Intro ─────────────── */
+  .as__intro {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: calc(60px + var(--space-6)) var(--space-8) var(--space-8);
+    z-index: 2;
+    /* Enters as hero exits, plateaus, then exits as skills appear */
+    opacity: 0;
+    animation: introLifecycle linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 400vh 575vh;
+  }
+  @keyframes introLifecycle {
+    0%   { opacity: 0; translate: 0 28px; filter: blur(4px); }
+    18%  { opacity: 1; translate: 0 0;    filter: blur(0px); }
+    72%  { opacity: 1; translate: 0 0;    filter: blur(0px); }
+    100% { opacity: 0; translate: 0 -44px; filter: blur(6px); }
+  }
+
+  .as__label {
+    font-family: var(--font-mono);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent-bright);
     margin-bottom: var(--space-5);
   }
 
-  .about__text {
+  .as__heading {
     font-family: var(--font-sans);
-    font-size: 17px;
-    font-weight: 400;
-    line-height: 1.70;
+    font-size: clamp(40px, 6vw, 80px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    color: var(--text-primary);
+    margin-bottom: var(--space-6);
+  }
+
+  .as__body {
+    font-family: var(--font-sans);
+    font-size: clamp(15px, 1.8vw, 18px);
+    line-height: 1.65;
     color: var(--text-secondary);
-    margin-bottom: var(--space-4);
+    max-width: 54ch;
+    margin-bottom: var(--space-3);
   }
-  .about__text :global(strong) { color: var(--text-primary); font-weight: 600; }
+  .as__body :global(strong) { color: var(--text-primary); font-weight: 600; }
 
-  .about__stats {
+  /* ─────────────── Phase 2: Skills ─────────────── */
+  .as__skills {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: calc(60px + var(--space-4)) var(--space-8) var(--space-6);
+    z-index: 3;
+    pointer-events: none;
+    /* Fades in as intro begins to exit */
+    opacity: 0;
+    animation: skillsIn linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 450vh 510vh;
+  }
+  @keyframes skillsIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .as__skills-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent-bright);
+    margin-bottom: var(--space-6);
+    opacity: 0;
+    animation: eyebrowIn linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 458vh 506vh;
+  }
+  @keyframes eyebrowIn {
+    from { opacity: 0; translate: 0 10px; }
+    to   { opacity: 1; translate: 0 0; }
+  }
+
+  .as__skills-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-3);
-    margin-top: var(--space-6);
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+    max-width: 920px;
+    width: 100%;
   }
 
-  .stat {
-    padding: var(--space-4) var(--space-5);
-    border-radius: 10px;
+  .as__skill {
+    padding: var(--space-5);
+    border-radius: 14px;
     background: var(--bg-elevated);
     border: 1px solid var(--border-subtle);
     box-shadow: var(--shadow-card);
-  }
-  .stat__number {
-    font-family: var(--font-sans);
-    font-size: 36px;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    color: var(--text-primary);
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-  .stat__number span { color: var(--accent-bright); }
-  .stat__label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.10em;
-    text-transform: uppercase;
-    color: var(--text-muted);
+    opacity: 0;
+    scale: 0.92;
+    translate: 0 20px;
   }
 
-  .skills-grid { display: flex; flex-direction: column; gap: var(--space-6); }
-  .skills-group__title {
+  /* Each card appears sequentially, 18vh apart */
+  .as__skill--1 {
+    animation: skillCardIn linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 467vh 512vh;
+  }
+  .as__skill--2 {
+    animation: skillCardIn linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 485vh 530vh;
+  }
+  .as__skill--3 {
+    animation: skillCardIn linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 503vh 548vh;
+  }
+  .as__skill--4 {
+    animation: skillCardIn linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 521vh 566vh;
+  }
+  .as__skill--5 {
+    animation: skillCardIn linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 539vh 584vh;
+  }
+  .as__skill--6 {
+    animation: skillCardIn linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 557vh 602vh;
+  }
+  @keyframes skillCardIn {
+    from { opacity: 0; scale: 0.92; translate: 0 20px; }
+    to   { opacity: 1; scale: 1;    translate: 0 0; }
+  }
+
+  .as__skill-title {
     font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-muted);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-bright);
     margin-bottom: var(--space-3);
   }
-  .skills-group__tags { display: flex; flex-wrap: wrap; gap: 8px; }
 
-  /* Stagger skill groups via animation-range offsets */
-  .skills-grid > div:nth-child(1) { animation-range: entry 0%  entry 35%; }
-  .skills-grid > div:nth-child(2) { animation-range: entry 5%  entry 40%; }
-  .skills-grid > div:nth-child(3) { animation-range: entry 10% entry 45%; }
-  .skills-grid > div:nth-child(4) { animation-range: entry 15% entry 50%; }
-  .skills-grid > div:nth-child(5) { animation-range: entry 20% entry 55%; }
-  .skills-grid > div:nth-child(6) { animation-range: entry 25% entry 60%; }
+  .as__skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  /* ─────────────── Fallbacks ─────────────── */
+  @supports not (animation-timeline: scroll()) {
+    .as { height: auto; }
+    .as__stage {
+      position: relative; top: auto;
+      height: auto; min-height: auto;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: var(--space-10) var(--space-8);
+      gap: var(--space-9);
+    }
+    .as__intro {
+      position: static;
+      opacity: 1; animation: none;
+      text-align: left;
+      padding: 0;
+    }
+    .as__skills {
+      position: static;
+      opacity: 1; animation: none;
+      pointer-events: auto;
+      padding: 0;
+      align-items: flex-start;
+      width: 100%;
+    }
+    .as__skills-eyebrow { opacity: 1; animation: none; }
+    .as__skill { opacity: 1; scale: 1; translate: none; animation: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .as { height: auto; }
+    .as__stage {
+      position: relative; top: auto;
+      height: auto; min-height: auto;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: var(--space-10) var(--space-8);
+      gap: var(--space-9);
+    }
+    .as__intro { position: static; opacity: 1; animation: none; text-align: left; padding: 0; }
+    .as__skills { position: static; opacity: 1; animation: none; pointer-events: auto; padding: 0; align-items: flex-start; width: 100%; }
+    .as__skills-eyebrow { opacity: 1; animation: none; }
+    .as__skill { opacity: 1; scale: 1; translate: none; animation: none; }
+  }
 
   @media (max-width: 900px) {
-    .about {
-      grid-template-columns: 1fr;
-      padding: var(--space-8) var(--space-5);
-      gap: var(--space-7);
+    .as__stage { padding: 0; }
+    .as__intro {
+      padding: calc(60px + var(--space-5)) var(--space-5) var(--space-5);
     }
-    .about__intro { position: static; }
+    .as__skills {
+      padding: calc(60px + var(--space-4)) var(--space-5) var(--space-5);
+    }
+    .as__skills-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-3);
+      max-width: 600px;
+    }
   }
-  @media (max-width: 600px) {
-    .about__stats { grid-template-columns: 1fr; }
+
+  @media (max-width: 540px) {
+    .as__heading { font-size: clamp(32px, 10vw, 48px); }
+    .as__skills-grid { grid-template-columns: 1fr; max-width: 360px; }
   }
 </style>
