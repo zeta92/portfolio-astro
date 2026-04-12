@@ -44,83 +44,231 @@ const { t, lang } = Astro.props;
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;0,14..32,900;1,14..32,300;1,14..32,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="alternate" hreflang="en" href="/" />
   <link rel="alternate" hreflang="es" href="/es/" />
   <style is:global>
     /* ─────────────────────────────────────────────
-       DESIGN TOKENS  (Claude × Cursor × Vercel)
+       DESIGN TOKENS — Signal (Linear × Vercel × Raycast)
     ───────────────────────────────────────────── */
     :root {
-      --parchment:    #f5f4ed;
-      --ivory:        #faf9f5;
-      --warm-sand:    #e8e6dc;
-      --near-black:   #141413;
-      --dark-surface: #30302e;
-      --text-primary:   #141413;
-      --text-secondary: #5e5d59;
-      --text-tertiary:  #87867f;
-      --text-light:     #b0aea5;
-      --terracotta:  #c96442;
-      --coral:       #d97757;
-      --border-light: #f0eee6;
-      --border-warm:  #e8e6dc;
-      --shadow-border:   0px 0px 0px 1px rgba(20,20,19,0.10);
-      --shadow-border-md:0px 0px 0px 1px rgba(20,20,19,0.18);
-      --shadow-card:     0px 0px 0px 1px rgba(20,20,19,0.08), 0px 2px 2px rgba(20,20,19,0.04), 0px 8px 24px rgba(20,20,19,0.06);
-      --shadow-card-dark:0px 0px 0px 1px rgba(255,255,255,0.06), 0px 4px 24px rgba(0,0,0,0.30);
+      /* Surfaces */
+      --bg-base:        #0a0a0f;
+      --bg-surface:     #0f0f17;
+      --bg-elevated:    #16161f;
+      --bg-overlay:     #1c1c28;
+
+      /* Accent — Electric Violet */
+      --accent:         #7c3aed;
+      --accent-bright:  #8b5cf6;
+      --accent-dim:     #4c1d95;
+      --accent-glow:    rgba(124,58,237,0.35);
+      --accent-subtle:  rgba(124,58,237,0.08);
+      --accent-border:  rgba(124,58,237,0.22);
+
+      /* Text */
+      --text-primary:   #f0f0f8;
+      --text-secondary: #a0a0b8;
+      --text-tertiary:  #606078;
+      --text-muted:     #3c3c50;
+
+      /* Borders */
+      --border-subtle:  rgba(255,255,255,0.06);
+      --border-default: rgba(255,255,255,0.10);
+      --border-accent:  rgba(124,58,237,0.30);
+
+      /* Shadows */
+      --shadow-sm:   0 1px 2px rgba(0,0,0,0.4);
+      --shadow-md:   0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+      --shadow-lg:   0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06);
+      --shadow-glow: 0 0 24px rgba(124,58,237,0.4), 0 0 48px rgba(124,58,237,0.15);
+      --shadow-card: 0 0 0 1px rgba(255,255,255,0.06), 0 2px 8px rgba(0,0,0,0.4);
+
+      /* Spacing */
       --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px;
       --space-6:32px; --space-7:48px; --space-8:64px; --space-9:96px; --space-10:128px;
-      --font-display:'Syne',system-ui,Arial,sans-serif;
-      --font-serif:'Crimson Pro',Georgia,'Times New Roman',serif;
+      --space-11:160px;
+
+      /* Typography */
+      --font-sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
       --font-mono:'JetBrains Mono','SFMono-Regular',Menlo,Consolas,monospace;
-      --ease-color:150ms ease;
-      --ease-shadow:200ms ease;
+
+      /* Transitions */
+      --ease-color:  120ms ease;
+      --ease-shadow: 180ms ease;
+      --ease-move:   220ms cubic-bezier(0.16,1,0.3,1);
     }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth;font-size:16px}
-    body{background-color:var(--parchment);color:var(--text-primary);font-family:var(--font-serif);font-weight:400;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-    a{color:inherit;text-decoration:none}
-    ul,ol{list-style:none}
-    img{display:block;max-width:100%}
-    .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}
-    .reveal.visible{opacity:1;transform:translateY(0)}
-    .section-label{font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--terracotta);margin-bottom:var(--space-4);display:flex;align-items:center;gap:8px}
-    .section-label::before{content:'';display:block;width:24px;height:1px;background:var(--terracotta)}
-    .tag{font-family:var(--font-mono);font-size:12px;font-weight:400;letter-spacing:0.03em;color:var(--text-secondary);padding:5px 12px;border-radius:9999px;background:var(--ivory);box-shadow:var(--shadow-border);transition:box-shadow var(--ease-shadow),color var(--ease-color),background var(--ease-color);cursor:default}
-    .tag:hover{box-shadow:var(--shadow-border-md);color:var(--text-primary);background:var(--warm-sand)}
-    .tag--accent{background:rgba(201,100,66,0.1);color:var(--terracotta);box-shadow:0px 0px 0px 1px rgba(201,100,66,0.2)}
-    .tag--accent:hover{background:rgba(201,100,66,0.18);box-shadow:0px 0px 0px 1px rgba(201,100,66,0.35)}
-    .tag--dark{font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;color:rgba(176,174,165,0.7);padding:4px 10px;border-radius:9999px;background:rgba(255,255,255,0.05);box-shadow:0px 0px 0px 1px rgba(255,255,255,0.08);transition:background var(--ease-color),color var(--ease-color)}
-    .tag--dark:hover{background:rgba(255,255,255,0.09);color:var(--text-light)}
-    .tag--dark-accent{color:rgba(201,100,66,0.85);background:rgba(201,100,66,0.08);box-shadow:0px 0px 0px 1px rgba(201,100,66,0.18)}
-    .section-divider{width:100%;height:1px;background:var(--border-warm)}
+
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0 }
+    html { scroll-behavior:smooth; font-size:16px }
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    a { color:inherit; text-decoration:none }
+    ul,ol { list-style:none }
+    img { display:block; max-width:100% }
+
+    /* ── Progress bar (scroll-driven) ─── */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0; z-index: 200;
+      height: 2px; width: 100%;
+      transform-origin: left center;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+      box-shadow: 0 0 8px rgba(124,58,237,0.8);
+      scale: 0 1;
+      animation: progressFill linear both;
+      animation-timeline: scroll(root block);
+    }
+    @keyframes progressFill {
+      from { scale: 0 1; }
+      to   { scale: 1 1; }
+    }
+
+    /* ── Scroll-driven reveal utilities ─── */
+    .fade-up {
+      opacity: 0;
+      translate: 0 24px;
+      animation: fadeUp linear both;
+      animation-timeline: view(block);
+      animation-range: entry 0% entry 30%;
+    }
+    @keyframes fadeUp {
+      to { opacity: 1; translate: 0 0; }
+    }
+
+    .scale-in {
+      opacity: 0;
+      scale: 0.94;
+      animation: scaleIn linear both;
+      animation-timeline: view(block);
+      animation-range: entry 0% entry 28%;
+    }
+    @keyframes scaleIn {
+      to { opacity: 1; scale: 1; }
+    }
+
+    .slide-left {
+      opacity: 0;
+      translate: -32px 0;
+      animation: slideLeft linear both;
+      animation-timeline: view(block);
+      animation-range: entry 0% entry 30%;
+    }
+    @keyframes slideLeft {
+      to { opacity: 1; translate: 0 0; }
+    }
+
+    /* ── Global UI components ─── */
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-bright);
+      margin-bottom: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.05);
+      box-shadow: 0 0 0 1px var(--border-subtle);
+      transition: box-shadow var(--ease-shadow), color var(--ease-color), background var(--ease-color);
+      cursor: default;
+    }
+    .tag:hover {
+      box-shadow: 0 0 0 1px var(--border-default);
+      color: var(--text-primary);
+      background: rgba(255,255,255,0.09);
+    }
+    .tag--accent {
+      background: var(--accent-subtle);
+      color: var(--accent-bright);
+      box-shadow: 0 0 0 1px var(--accent-border);
+    }
+    .tag--accent:hover {
+      background: rgba(124,58,237,0.14);
+      box-shadow: 0 0 0 1px rgba(124,58,237,0.40);
+    }
+    /* tag--dark and tag--dark-accent map to the same base in the new dark-first design */
+    .tag--dark {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.05);
+      box-shadow: 0 0 0 1px var(--border-subtle);
+      transition: background var(--ease-color), color var(--ease-color);
+    }
+    .tag--dark:hover {
+      background: rgba(255,255,255,0.09);
+      color: var(--text-primary);
+    }
+    .tag--dark-accent {
+      color: var(--accent-bright);
+      background: var(--accent-subtle);
+      box-shadow: 0 0 0 1px var(--accent-border);
+    }
+
+    .section-divider { width:100%; height:1px; background:var(--border-subtle) }
+
+    /* ── @supports fallback (no scroll-driven animations) ─── */
+    @supports not (animation-timeline: scroll()) {
+      .fade-up, .scale-in, .slide-left {
+        opacity: 1;
+        translate: none;
+        scale: none;
+        animation: none;
+      }
+      #progress-bar { display: none; }
+    }
+
+    /* ── Reduced motion ─── */
+    @media (prefers-reduced-motion: reduce) {
+      .fade-up, .scale-in, .slide-left {
+        animation: none;
+        opacity: 1;
+        translate: none;
+        scale: none;
+      }
+      #progress-bar { animation: none; }
+    }
   </style>
 </head>
 <body style="overflow: hidden">
   <Loader />
+  <div id="progress-bar"></div>
   <Nav t={t} lang={lang} />
   <slot />
   <Footer t={t} />
   <Analytics />
   <script>
-    // Nav dark/light switch
-    const nav = document.getElementById('nav');
-    const hero = document.getElementById('hero');
-    if (nav && hero) {
-      const obs = new IntersectionObserver(([e]) => nav.classList.toggle('nav--dark', !e.isIntersecting), { threshold: 0.1 });
-      obs.observe(hero);
-    }
-    // Scroll reveal
-    const revealObs = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
-    // Timeline stagger
-    const tlObs = new IntersectionObserver((entries) => {
-      entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80); });
-    }, { threshold: 0.05 });
-    document.querySelectorAll('.timeline-item').forEach(el => tlObs.observe(el));
     // Hero reveal — fires after loader exits
     document.addEventListener('loaderDone', () => {
       ['hero-avatar','hero-tag','hero-headline','hero-body','hero-meta'].forEach((id, i) => {
