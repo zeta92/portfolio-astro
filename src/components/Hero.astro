@@ -3,84 +3,129 @@ import type { Translations } from '../i18n/en';
 interface Props { t: Translations; }
 const { t } = Astro.props;
 const h = t.hero;
+const stats = t.about.stats;
 ---
-<section class="hero" id="hero">
-  <div class="hero__grid-bg" aria-hidden="true"></div>
-  <div class="hero__glow" aria-hidden="true"></div>
 
-  <div class="hero__content">
-    <img src="/avatar.jpg" alt="Luis Tiburcio" class="hero__avatar" id="hero-avatar" />
-    <p class="hero__tag" id="hero-tag">{h.tag}</p>
-    <h1 class="hero__headline" id="hero-headline">
-      {h.headline1}<br /><em>{h.headline2}</em><br />{h.headline3}
-    </h1>
-    <p class="hero__body" id="hero-body">{h.body}</p>
-    <div class="hero__meta" id="hero-meta">
-      <span class="hero__meta-item"><span class="hero__meta-dot"></span>{h.meta1}</span>
-      <span class="hero__meta-item"><span class="hero__meta-dot"></span>{h.meta2}</span>
-      <span class="hero__meta-item"><span class="hero__meta-dot"></span>{h.meta3}</span>
+<!--
+  Hero Scene — 400vh
+  Sticky stage (100vh) pins while the extra 300vh drives scroll-driven animations.
+  Phase 1 (Identity): reveals post-loader, exits at scroll 80-130vh
+  Phase 2 (Specs):    4 stat cards zoom in one-by-one, scroll 60-230vh
+-->
+<section class="hs" id="hero">
+  <div class="hs__stage">
+
+    <!-- Always-visible: grid + radial glow -->
+    <div class="hs__grid" aria-hidden="true"></div>
+    <div class="hs__glow" aria-hidden="true"></div>
+
+    <!-- ── Phase 1: Identity ── -->
+    <div class="hs__identity">
+      <img src="/avatar.jpg" alt="Luis Tiburcio" class="hs__avatar" id="hero-avatar" />
+      <p class="hs__tag" id="hero-tag">{h.tag}</p>
+      <h1 class="hs__headline" id="hero-headline">
+        {h.headline1}<br /><em>{h.headline2}</em><br />{h.headline3}
+      </h1>
+      <p class="hs__body" id="hero-body">{h.body}</p>
+      <div class="hs__meta" id="hero-meta">
+        <span class="hs__meta-item"><span class="hs__meta-dot"></span>{h.meta1}</span>
+        <span class="hs__meta-item"><span class="hs__meta-dot"></span>{h.meta2}</span>
+        <span class="hs__meta-item"><span class="hs__meta-dot"></span>{h.meta3}</span>
+      </div>
     </div>
-  </div>
 
-  <div class="hero__scroll">{h.scroll}</div>
+    <!-- ── Phase 2: Stats / Specs (Apple product-spec style) ── -->
+    <div class="hs__specs" aria-hidden="true">
+      <p class="hs__specs-eyebrow">By the numbers</p>
+      <div class="hs__specs-grid">
+        <div class="hs__spec hs__spec--1">
+          <div class="hs__spec-num">12<em>+</em></div>
+          <div class="hs__spec-label">{stats.years}</div>
+        </div>
+        <div class="hs__spec hs__spec--2">
+          <div class="hs__spec-num">9</div>
+          <div class="hs__spec-label">{stats.companies}</div>
+        </div>
+        <div class="hs__spec hs__spec--3">
+          <div class="hs__spec-num">3</div>
+          <div class="hs__spec-label">{stats.leadership}</div>
+        </div>
+        <div class="hs__spec hs__spec--4">
+          <div class="hs__spec-num">2M<em>+</em></div>
+          <div class="hs__spec-label">{stats.users}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="hs__scroll" id="hero-scroll">{h.scroll}</div>
+  </div>
 </section>
 
 <style>
-  .hero {
-    min-height: 100vh;
+  /* ──────────────────────────────────────────────
+     SCENE: 400vh — gives 300vh of sticky scroll travel
+  ────────────────────────────────────────────── */
+  .hs {
+    height: 400vh;
+    position: relative;
+  }
+
+  /* STAGE: sticky 100vh viewport */
+  .hs__stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
     background: var(--bg-base);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: calc(60px + var(--space-10)) var(--space-8) var(--space-11);
-    position: relative;
-    overflow: hidden;
+    padding: calc(60px + var(--space-9)) var(--space-8) var(--space-10);
   }
 
-  /* Grid background */
-  .hero__grid-bg {
-    position: absolute;
-    inset: 0;
+  /* Grid */
+  .hs__grid {
+    position: absolute; inset: 0;
     background-image:
       linear-gradient(var(--border-subtle) 1px, transparent 1px),
       linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
     background-size: 48px 48px;
-    pointer-events: none;
-    z-index: 0;
+    pointer-events: none; z-index: 0;
   }
 
-  /* Violet radial glow */
-  .hero__glow {
+  /* Radial violet glow — drifts during scroll */
+  .hs__glow {
     position: absolute;
     bottom: -10%; left: -5%;
     width: 65%; height: 75%;
-    background: radial-gradient(ellipse at 0% 100%, rgba(124,58,237,0.14) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* Content wrapper — scroll-driven parallax fade-out */
-  .hero__content {
-    position: relative;
-    z-index: 1;
-    animation: heroParallax linear both;
+    background: radial-gradient(ellipse at 0% 100%, rgba(124,58,237,0.15) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+    animation: glowDrift linear both;
     animation-timeline: scroll(root block);
-    animation-range: 0vh 60vh;
+    animation-range: 50vh 280vh;
   }
-  @keyframes heroParallax {
-    0%   { opacity: 1; translate: 0 0;     filter: blur(0px); }
-    70%  { opacity: 0.4; translate: 0 -40px; filter: blur(0px); }
-    100% { opacity: 0;   translate: 0 -80px; filter: blur(4px); }
-  }
-  @supports not (animation-timeline: scroll()) {
-    .hero__content { animation: none; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .hero__content { animation: none; }
+  @keyframes glowDrift {
+    from { left: -5%;  bottom: -10%; opacity: 1; }
+    to   { left: 40%;  bottom: 20%;  opacity: 0.4; }
   }
 
-  /* Avatar */
-  .hero__avatar {
+  /* ─────────────── Phase 1: Identity ─────────────── */
+  .hs__identity {
+    position: relative;
+    z-index: 2;
+    /* Exits with scroll: fades up and blurs away */
+    animation: identityExit linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 78vh 138vh;
+  }
+  @keyframes identityExit {
+    from { opacity: 1; translate: 0 0;     filter: blur(0px);  }
+    to   { opacity: 0; translate: 0 -56px; filter: blur(8px);  }
+  }
+
+  /* Avatar — JS-triggered .visible class controls initial entrance */
+  .hs__avatar {
     width: 72px; height: 72px;
     border-radius: 50%;
     object-fit: cover;
@@ -93,39 +138,30 @@ const h = t.hero;
     transform: scale(0.9);
     transition: opacity 0.6s ease, transform 0.6s ease;
   }
-  .hero__avatar.visible { opacity: 1; transform: scale(1); }
+  .hs__avatar.visible { opacity: 1; transform: scale(1); }
 
-  /* Tag */
-  .hero__tag {
+  .hs__tag {
     font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-size: 12px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
     color: var(--accent-bright);
     margin-bottom: var(--space-5);
-    opacity: 0;
-    transform: translateY(12px);
+    opacity: 0; transform: translateY(12px);
     transition: opacity 0.6s ease, transform 0.6s ease;
   }
-  .hero__tag.visible { opacity: 1; transform: translateY(0); }
+  .hs__tag.visible { opacity: 1; transform: translateY(0); }
 
-  /* Headline */
-  .hero__headline {
+  .hs__headline {
     font-family: var(--font-sans);
     font-size: clamp(52px, 8.5vw, 116px);
-    font-weight: 800;
-    line-height: 0.92;
-    letter-spacing: -0.04em;
+    font-weight: 800; line-height: 0.92; letter-spacing: -0.04em;
     color: var(--text-primary);
-    max-width: 14ch;
-    margin-bottom: var(--space-6);
-    opacity: 0;
-    transform: translateY(20px);
+    max-width: 14ch; margin-bottom: var(--space-6);
+    opacity: 0; transform: translateY(20px);
     transition: opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s;
   }
-  .hero__headline.visible { opacity: 1; transform: translateY(0); }
-  .hero__headline em {
+  .hs__headline.visible { opacity: 1; transform: translateY(0); }
+  .hs__headline em {
     font-style: normal;
     background: linear-gradient(135deg, var(--accent-bright) 0%, #c4b5fd 100%);
     -webkit-background-clip: text;
@@ -133,74 +169,189 @@ const h = t.hero;
     background-clip: text;
   }
 
-  /* Body */
-  .hero__body {
+  .hs__body {
     font-family: var(--font-sans);
-    font-size: clamp(17px, 2vw, 20px);
-    font-weight: 400;
-    line-height: 1.65;
+    font-size: clamp(17px, 2vw, 20px); font-weight: 400; line-height: 1.65;
     color: var(--text-secondary);
-    max-width: 52ch;
-    margin-bottom: var(--space-7);
-    opacity: 0;
-    transform: translateY(16px);
+    max-width: 52ch; margin-bottom: var(--space-7);
+    opacity: 0; transform: translateY(16px);
     transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
   }
-  .hero__body.visible { opacity: 1; transform: translateY(0); }
+  .hs__body.visible { opacity: 1; transform: translateY(0); }
 
-  /* Meta */
-  .hero__meta {
-    display: flex;
-    align-items: center;
-    gap: var(--space-6);
-    flex-wrap: wrap;
-    opacity: 0;
-    transform: translateY(12px);
+  .hs__meta {
+    display: flex; align-items: center;
+    gap: var(--space-6); flex-wrap: wrap;
+    opacity: 0; transform: translateY(12px);
     transition: opacity 0.6s ease 0.35s, transform 0.6s ease 0.35s;
   }
-  .hero__meta.visible { opacity: 1; transform: translateY(0); }
-  .hero__meta-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    color: var(--text-tertiary);
-    text-transform: uppercase;
+  .hs__meta.visible { opacity: 1; transform: translateY(0); }
+  .hs__meta-item {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; color: var(--text-tertiary); text-transform: uppercase;
   }
-  .hero__meta-dot {
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    background: var(--accent);
-    flex-shrink: 0;
+  .hs__meta-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
     box-shadow: 0 0 6px rgba(124,58,237,0.7);
   }
 
-  /* Scroll indicator */
-  .hero__scroll {
-    position: absolute;
-    bottom: var(--space-7);
-    right: var(--space-8);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    z-index: 1;
-    animation: scrollPulse 2.5s ease-in-out infinite;
+  /* ─────────────── Phase 2: Specs ─────────────── */
+  .hs__specs {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 2; pointer-events: none;
+    /* Container fades in as identity starts to exit */
+    opacity: 0;
+    animation: specsIn linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 60vh 120vh;
   }
-  @keyframes scrollPulse { 0%,100% { opacity: 0.3 } 50% { opacity: 0.7 } }
+  @keyframes specsIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .hs__specs-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent-bright);
+    margin-bottom: var(--space-7);
+    opacity: 0;
+    animation: eyebrowIn linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 65vh 115vh;
+  }
+  @keyframes eyebrowIn {
+    from { opacity: 0; translate: 0 10px; }
+    to   { opacity: 1; translate: 0 0; }
+  }
+
+  .hs__specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    max-width: 580px; width: 100%;
+    padding: 0 var(--space-5);
+  }
+
+  .hs__spec {
+    padding: var(--space-6);
+    border-radius: 16px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-card);
+    text-align: center;
+    opacity: 0; scale: 0.88; translate: 0 24px;
+  }
+
+  /* Each card appears sequentially, 30vh apart */
+  .hs__spec--1 {
+    animation: specCardIn linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 80vh  140vh;
+  }
+  .hs__spec--2 {
+    animation: specCardIn linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 112vh 172vh;
+  }
+  .hs__spec--3 {
+    animation: specCardIn linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 144vh 204vh;
+  }
+  .hs__spec--4 {
+    animation: specCardIn linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 176vh 236vh;
+  }
+  @keyframes specCardIn {
+    from { opacity: 0; scale: 0.88; translate: 0 24px; }
+    to   { opacity: 1; scale: 1;    translate: 0 0; }
+  }
+
+  .hs__spec-num {
+    font-family: var(--font-sans);
+    font-size: clamp(48px, 7vw, 78px);
+    font-weight: 800; letter-spacing: -0.04em; line-height: 1;
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+  }
+  .hs__spec-num em {
+    font-style: normal;
+    color: var(--accent-bright);
+    font-size: 0.55em;
+    vertical-align: super;
+  }
+  .hs__spec-label {
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* Scroll indicator — fades as user starts scrolling */
+  .hs__scroll {
+    position: absolute;
+    bottom: var(--space-7); right: var(--space-8);
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-muted);
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    z-index: 3;
+    animation: scrollHint linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0vh 50vh;
+  }
+  @keyframes scrollHint {
+    0%   { opacity: 0.6; }
+    100% { opacity: 0; }
+  }
+
+  /* ─────────────── Fallbacks ─────────────── */
+  @supports not (animation-timeline: scroll()) {
+    .hs { height: auto; min-height: 100vh; }
+    .hs__stage {
+      position: relative; top: auto;
+      height: auto; min-height: 100vh;
+      padding-bottom: var(--space-10);
+    }
+    .hs__identity { animation: none; }
+    .hs__glow { animation: none; }
+    .hs__specs {
+      position: static;
+      opacity: 1;
+      padding: var(--space-9) var(--space-8);
+      pointer-events: auto;
+    }
+    .hs__spec { opacity: 1; scale: 1; translate: none; animation: none; }
+    .hs__specs-eyebrow { opacity: 1; animation: none; }
+    .hs__scroll { animation: none; opacity: 0.5; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hs { height: auto; min-height: 100vh; }
+    .hs__stage { position: relative; top: auto; height: auto; min-height: 100vh; }
+    .hs__identity { animation: none; }
+    .hs__glow { animation: none; }
+    .hs__specs { position: static; opacity: 1; padding: var(--space-9) var(--space-8); pointer-events: auto; }
+    .hs__spec { opacity: 1; scale: 1; translate: none; animation: none; }
+    .hs__specs-eyebrow { opacity: 1; animation: none; }
+    .hs__scroll { animation: none; opacity: 0.4; }
+  }
 
   @media (max-width: 900px) {
-    .hero { padding: calc(60px + var(--space-8)) var(--space-5) var(--space-8); }
+    .hs__stage { padding: calc(60px + var(--space-7)) var(--space-5) var(--space-7); }
+    .hs__specs-grid { grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+    .hs__spec { padding: var(--space-4); }
   }
-  @media (max-width: 480px) {
-    .hero__headline { font-size: clamp(40px, 12vw, 56px); }
+  @media (max-width: 540px) {
+    .hs__headline { font-size: clamp(40px, 12vw, 56px); }
+    .hs__spec-num { font-size: clamp(38px, 10vw, 56px); }
+    .hs__specs-grid { gap: var(--space-3); padding: 0 var(--space-3); }
   }
 </style>
