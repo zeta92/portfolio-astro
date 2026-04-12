@@ -21,14 +21,14 @@ const companyKeys = [
 <section class="experience" id="experience">
   <div class="experience__inner">
     <div class="experience__header">
-      <h2 class="experience__heading reveal">{exp.heading}</h2>
-      <span class="experience__count reveal">{exp.count}</span>
+      <h2 class="experience__heading fade-up">{exp.heading}</h2>
+      <span class="experience__count fade-up">{exp.count}</span>
     </div>
     <div class="timeline">
       {exp.jobs.map((job, i) => {
         const articles = press[companyKeys[i]] ?? [];
         return (
-          <div class="timeline-item">
+          <div class="timeline-item fade-up">
             <div class="timeline-item__years">
               <strong>{job.period}</strong>
               {job.company}
@@ -71,63 +71,185 @@ const companyKeys = [
 </section>
 
 <style>
-  .experience { background: var(--near-black); padding: var(--space-10) var(--space-8); }
+  .experience {
+    background: var(--bg-base);
+    padding: var(--space-10) var(--space-8);
+  }
   .experience__inner { max-width: 1280px; margin: 0 auto; }
+
   .experience__header {
-    display: flex; align-items: flex-end; justify-content: space-between;
-    margin-bottom: var(--space-9); flex-wrap: wrap; gap: var(--space-4);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: var(--space-9);
+    flex-wrap: wrap;
+    gap: var(--space-4);
   }
+
   .experience__heading {
-    font-family: var(--font-display); font-size: clamp(36px,5vw,64px);
-    font-weight: 800; letter-spacing: -0.03em; line-height: 1; color: var(--ivory);
+    font-family: var(--font-sans);
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--text-primary);
   }
+
   .experience__count {
-    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--text-tertiary); padding-bottom: 4px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding-bottom: 4px;
   }
-  .timeline { display: flex; flex-direction: column; gap: 2px; }
+
+  /* Timeline with scroll-driven line draw */
+  .timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: 28px;
+  }
+
+  /* Animated vertical line */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      var(--accent) 6%,
+      var(--accent) 94%,
+      transparent 100%
+    );
+    scale: 1 0;
+    transform-origin: top center;
+    animation: timelineDraw linear both;
+    animation-timeline: view(block);
+    animation-range: entry 0% exit 80%;
+  }
+  @keyframes timelineDraw {
+    from { scale: 1 0; opacity: 0; }
+    5%   { opacity: 1; }
+    to   { scale: 1 1; opacity: 1; }
+  }
+  @supports not (animation-timeline: scroll()) {
+    .timeline::before { scale: 1 1; opacity: 1; animation: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .timeline::before { scale: 1 1; opacity: 1; animation: none; }
+  }
+
   .timeline-item {
-    display: grid; grid-template-columns: 140px 1fr; gap: var(--space-6);
-    padding: var(--space-6) 0; border-top: 1px solid rgba(255,255,255,0.06);
-    opacity: 0; transform: translateY(20px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-    cursor: pointer;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: var(--space-6);
+    padding: var(--space-6) 0;
+    border-top: 1px solid var(--border-subtle);
+    position: relative;
+    cursor: default;
   }
-  .timeline-item.visible { opacity: 1; transform: translateY(0); }
-  .timeline-item:last-child { border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .timeline-item:last-child { border-bottom: 1px solid var(--border-subtle); }
+
+  /* Dot on timeline line */
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -32px;
+    top: calc(var(--space-6) + 10px);
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--bg-surface);
+    box-shadow: 0 0 0 1.5px var(--border-default);
+    z-index: 1;
+    transition: box-shadow var(--ease-shadow);
+  }
+  .timeline-item:hover::before {
+    box-shadow: 0 0 0 1.5px var(--accent-bright), 0 0 12px rgba(124,58,237,0.5);
+  }
+
   .timeline-item:hover .timeline-item__content { padding-left: var(--space-4); }
-  .timeline-item__content { transition: padding-left 0.25s ease; }
+  .timeline-item__content { transition: padding-left var(--ease-move); }
+
   .timeline-item__years {
-    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em;
-    color: var(--text-tertiary); padding-top: 3px; line-height: 1.5;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--text-tertiary);
+    padding-top: 3px;
+    line-height: 1.5;
   }
   .timeline-item__years strong {
-    display: block; font-family: var(--font-display); font-size: 13px; font-weight: 700;
-    letter-spacing: 0.04em; color: var(--text-light); margin-bottom: 2px;
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
   }
+
   .timeline-item__role {
-    font-family: var(--font-display); font-size: clamp(20px,2.5vw,28px);
-    font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; color: var(--ivory); margin-bottom: 4px;
+    font-family: var(--font-sans);
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin-bottom: 4px;
   }
+
   .timeline-item__company {
-    font-family: var(--font-serif); font-size: 16px; font-style: italic;
-    color: var(--terracotta); margin-bottom: var(--space-3);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--accent-bright);
+    margin-bottom: var(--space-3);
   }
+
   .timeline-item__desc {
-    font-family: var(--font-serif); font-size: 16px; line-height: 1.65;
-    color: var(--text-light); max-width: 64ch; margin-bottom: var(--space-4);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.70;
+    color: var(--text-secondary);
+    max-width: 64ch;
+    margin-bottom: var(--space-4);
   }
+
   .timeline-item__tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  /* Stagger timeline items via animation-range */
+  .timeline-item:nth-child(1) { animation-range: entry 0%  entry 35%; }
+  .timeline-item:nth-child(2) { animation-range: entry 3%  entry 38%; }
+  .timeline-item:nth-child(3) { animation-range: entry 6%  entry 41%; }
+  .timeline-item:nth-child(4) { animation-range: entry 9%  entry 44%; }
+  .timeline-item:nth-child(5) { animation-range: entry 12% entry 47%; }
+  .timeline-item:nth-child(6) { animation-range: entry 15% entry 50%; }
+  .timeline-item:nth-child(7) { animation-range: entry 18% entry 53%; }
+  .timeline-item:nth-child(8) { animation-range: entry 21% entry 56%; }
+  .timeline-item:nth-child(9) { animation-range: entry 24% entry 59%; }
+
   @media (max-width: 900px) {
     .experience { padding: var(--space-8) var(--space-5); }
     .experience__header { margin-bottom: var(--space-7); }
-    .timeline-item { grid-template-columns: 1fr; gap: var(--space-3); }
+    .timeline { padding-left: 0; }
+    .timeline::before { display: none; }
+    .timeline-item {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+      padding-left: 0;
+    }
+    .timeline-item::before { display: none; }
     .timeline-item__years { display: flex; align-items: center; gap: var(--space-3); }
   }
 
-  /* ── Press badges ───────────────────────────── */
+  /* ── Press badges ─── */
   .press-row {
-    border-top: 1px solid rgba(255,255,255,0.06);
+    border-top: 1px solid var(--border-subtle);
     padding-top: var(--space-3);
     margin-top: var(--space-3);
     display: flex;
@@ -139,7 +261,7 @@ const companyKeys = [
     font-size: 10px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(176,174,165,0.4);
+    color: var(--text-muted);
   }
   .press-badge {
     display: flex;
@@ -147,23 +269,22 @@ const companyKeys = [
     gap: 10px;
     padding: 8px 12px;
     border-radius: 6px;
-    background: rgba(255,255,255,0.03);
-    box-shadow: 0px 0px 0px 1px rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    box-shadow: 0 0 0 1px var(--border-subtle);
     text-decoration: none;
     max-width: min(520px, 100%);
     min-width: 0;
     transition: background var(--ease-color), box-shadow var(--ease-shadow);
   }
   .press-badge:hover {
-    background: rgba(255,255,255,0.06);
-    box-shadow: 0px 0px 0px 1px rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.05);
+    box-shadow: 0 0 0 1px var(--border-default);
   }
   .press-badge__logo {
     flex-shrink: 0;
-    width: 28px;
-    height: 28px;
+    width: 28px; height: 28px;
     border-radius: 4px;
-    background: rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.06);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -171,7 +292,7 @@ const companyKeys = [
     font-size: 8px;
     font-weight: 700;
     letter-spacing: 0.04em;
-    color: var(--text-light);
+    color: var(--text-secondary);
   }
   .press-badge__body {
     flex: 1;
@@ -184,12 +305,12 @@ const companyKeys = [
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.05em;
-    color: var(--terracotta);
+    color: var(--accent-bright);
   }
   .press-badge__headline {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     font-size: 13px;
-    color: rgba(176,174,165,0.85);
+    color: var(--text-secondary);
     line-height: 1.35;
     overflow: hidden;
     display: -webkit-box;
@@ -199,10 +320,8 @@ const companyKeys = [
   .press-badge__arrow {
     flex-shrink: 0;
     font-size: 12px;
-    color: rgba(176,174,165,0.25);
+    color: var(--text-muted);
     transition: color var(--ease-color);
   }
-  .press-badge:hover .press-badge__arrow {
-    color: rgba(176,174,165,0.6);
-  }
+  .press-badge:hover .press-badge__arrow { color: var(--text-secondary); }
 </style>

@@ -7,20 +7,20 @@ const sk = a.skillGroups;
 ---
 <section class="about" id="about">
   <div class="about__intro">
-    <p class="section-label reveal">{a.label}</p>
-    <h2 class="about__heading reveal">{a.heading1}<br />{a.heading2}</h2>
-    <p class="about__text reveal" set:html={a.body1} />
-    <p class="about__text reveal" set:html={a.body2} />
-    <div class="about__stats reveal">
-      <div class="stat"><div class="stat__number">12<span>+</span></div><div class="stat__label">{a.stats.years}</div></div>
-      <div class="stat"><div class="stat__number">9</div><div class="stat__label">{a.stats.companies}</div></div>
-      <div class="stat"><div class="stat__number">3</div><div class="stat__label">{a.stats.leadership}</div></div>
-      <div class="stat"><div class="stat__number">2M<span>+</span></div><div class="stat__label">{a.stats.users}</div></div>
+    <p class="section-label fade-up">{a.label}</p>
+    <h2 class="about__heading slide-left">{a.heading1}<br />{a.heading2}</h2>
+    <p class="about__text fade-up" set:html={a.body1} />
+    <p class="about__text fade-up" set:html={a.body2} />
+    <div class="about__stats">
+      <div class="stat scale-in"><div class="stat__number">12<span>+</span></div><div class="stat__label">{a.stats.years}</div></div>
+      <div class="stat scale-in"><div class="stat__number">9</div><div class="stat__label">{a.stats.companies}</div></div>
+      <div class="stat scale-in"><div class="stat__number">3</div><div class="stat__label">{a.stats.leadership}</div></div>
+      <div class="stat scale-in"><div class="stat__number">2M<span>+</span></div><div class="stat__label">{a.stats.users}</div></div>
     </div>
   </div>
 
   <div class="skills-grid">
-    <div class="reveal">
+    <div class="fade-up">
       <p class="skills-group__title">{sk.frontend}</p>
       <div class="skills-group__tags">
         <span class="tag tag--accent">React.js</span><span class="tag tag--accent">Next.js</span>
@@ -29,7 +29,7 @@ const sk = a.skillGroups;
         <span class="tag">Webpack</span><span class="tag">Styled Components</span><span class="tag">Three.js</span>
       </div>
     </div>
-    <div class="reveal">
+    <div class="fade-up">
       <p class="skills-group__title">{sk.designSystems}</p>
       <div class="skills-group__tags">
         <span class="tag tag--accent">Design Systems</span><span class="tag tag--accent">Figma Code Connect</span>
@@ -37,7 +37,7 @@ const sk = a.skillGroups;
         <span class="tag">Component Libraries</span><span class="tag">AI-assisted Dev</span>
       </div>
     </div>
-    <div class="reveal">
+    <div class="fade-up">
       <p class="skills-group__title">{sk.backend}</p>
       <div class="skills-group__tags">
         <span class="tag tag--accent">Node.js</span><span class="tag tag--accent">GraphQL</span>
@@ -45,7 +45,7 @@ const sk = a.skillGroups;
         <span class="tag">RESTful APIs</span><span class="tag">Java</span><span class="tag">PHP</span>
       </div>
     </div>
-    <div class="reveal">
+    <div class="fade-up">
       <p class="skills-group__title">{sk.cloud}</p>
       <div class="skills-group__tags">
         <span class="tag tag--accent">AWS</span><span class="tag">Firebase</span>
@@ -53,14 +53,14 @@ const sk = a.skillGroups;
         <span class="tag">Docker</span><span class="tag">CodePush</span><span class="tag">AppCenter</span>
       </div>
     </div>
-    <div class="reveal">
+    <div class="fade-up">
       <p class="skills-group__title">{sk.data}</p>
       <div class="skills-group__tags">
         <span class="tag">MongoDB</span><span class="tag">PostgreSQL</span>
         <span class="tag">MySQL</span><span class="tag">Oracle / PLSQL</span>
       </div>
     </div>
-    <div class="reveal">
+    <div class="fade-up">
       <p class="skills-group__title">{sk.realtime}</p>
       <div class="skills-group__tags">
         <span class="tag tag--accent">Web3</span><span class="tag tag--accent">WebRTC</span>
@@ -73,38 +73,98 @@ const sk = a.skillGroups;
 
 <style>
   .about {
-    background: var(--parchment); padding: var(--space-10) var(--space-8);
-    display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-9);
-    align-items: start; max-width: 1280px; margin: 0 auto;
+    background: var(--bg-surface);
+    padding: var(--space-10) var(--space-8);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-9);
+    align-items: start;
+    max-width: 1280px;
+    margin: 0 auto;
   }
-  .about__intro { position: sticky; top: calc(56px + var(--space-6)); }
+  .about__intro { position: sticky; top: calc(60px + var(--space-6)); }
+
   .about__heading {
-    font-family: var(--font-display); font-size: clamp(32px,4vw,52px);
-    font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;
-    color: var(--text-primary); margin-bottom: var(--space-5);
+    font-family: var(--font-sans);
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: var(--text-primary);
+    margin-bottom: var(--space-5);
   }
+
   .about__text {
-    font-family: var(--font-serif); font-size: 19px; font-weight: 400;
-    line-height: 1.7; color: var(--text-secondary); margin-bottom: var(--space-4);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.70;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-4);
   }
   .about__text :global(strong) { color: var(--text-primary); font-weight: 600; }
-  .about__stats { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-6); }
+
+  .about__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
   .stat {
-    padding: var(--space-4) var(--space-5); border-radius: 12px;
-    background: var(--ivory); box-shadow: var(--shadow-card);
+    padding: var(--space-4) var(--space-5);
+    border-radius: 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-card);
   }
   .stat__number {
-    font-family: var(--font-display); font-size: 36px; font-weight: 800;
-    letter-spacing: -0.03em; color: var(--text-primary); line-height: 1; margin-bottom: 4px;
+    font-family: var(--font-sans);
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 6px;
   }
-  .stat__number span { color: var(--terracotta); }
-  .stat__label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); }
+  .stat__number span { color: var(--accent-bright); }
+  .stat__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
   .skills-grid { display: flex; flex-direction: column; gap: var(--space-6); }
-  .skills-group__title { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: var(--space-3); }
+  .skills-group__title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: var(--space-3);
+  }
   .skills-group__tags { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* Stagger skill groups via animation-range offsets */
+  .skills-grid > div:nth-child(1) { animation-range: entry 0%  entry 35%; }
+  .skills-grid > div:nth-child(2) { animation-range: entry 5%  entry 40%; }
+  .skills-grid > div:nth-child(3) { animation-range: entry 10% entry 45%; }
+  .skills-grid > div:nth-child(4) { animation-range: entry 15% entry 50%; }
+  .skills-grid > div:nth-child(5) { animation-range: entry 20% entry 55%; }
+  .skills-grid > div:nth-child(6) { animation-range: entry 25% entry 60%; }
+
   @media (max-width: 900px) {
-    .about { grid-template-columns: 1fr; padding: var(--space-8) var(--space-5); gap: var(--space-7); }
+    .about {
+      grid-template-columns: 1fr;
+      padding: var(--space-8) var(--space-5);
+      gap: var(--space-7);
+    }
     .about__intro { position: static; }
   }
-  @media (max-width: 600px) { .about__stats { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) {
+    .about__stats { grid-template-columns: 1fr; }
+  }
 </style>
